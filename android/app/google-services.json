@@ -1,0 +1,64 @@
+{
+  "project_info": {
+    "project_number": "575477282",
+    "firebase_url": "https://immigration-points-calculator.firebaseio.com",
+    "project_id": "immigration-points-calculator",
+    "storage_bucket": "immigration-points-calculator.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:575477282:android:3091878a14c2fb386cdc7b",
+        "android_client_info": {
+          "package_name": "nz.co.pieme.apps.ipc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "575477282-dg35g2g1jsm7a5lr6bj8hdmunbdi3i2f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "nz.co.pieme.apps.ipc",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "575477282-7gu35t9qsr6406sj182robn8ge3rv84a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "nz.co.pieme.apps.ipc",
+            "certificate_hash": "22357fa6a3908b9afbd8b218b4fb802e8c387963"
+          }
+        },
+        {
+          "client_id": "575477282-kvlr7nbq35nceckb92qbsfqagjkq1hva.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOHOHKFImBXin6XToWW_iCKUznT5sK97M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "575477282-kvlr7nbq35nceckb92qbsfqagjkq1hva.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "575477282-i6hl44jupj82ppkfdo3bka6r0r0o67qv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "nz.co.pieme.apps.ipc"
+              }
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-3542184687162386~6615112997"
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.immigration">
+  package="nz.co.pieme.apps.ipc">
 
     <uses-permission android:name="android.permission.INTERNET" />
 

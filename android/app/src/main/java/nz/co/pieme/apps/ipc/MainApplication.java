@@ -1,4 +1,4 @@
-package com.immigration;
+package nz.co.pieme.apps.ipc;
 
 import android.app.Application;
 import android.content.Context;

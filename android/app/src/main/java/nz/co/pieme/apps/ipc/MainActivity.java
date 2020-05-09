@@ -1,4 +1,4 @@
-package com.immigration;
+package nz.co.pieme.apps.ipc;
 
 import com.facebook.react.ReactActivity;
 
