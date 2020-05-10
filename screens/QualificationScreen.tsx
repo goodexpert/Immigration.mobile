@@ -7,12 +7,18 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft, faInfo } from '@fortawesome/free-solid-svg-icons';
+import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
+import { asyncScheduler, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
+import { ADMOB_CONFIG } from '../global';
 import { QualificationProps } from './types';
-import { CheckBox, ComboBox } from '../components';
+import { CheckBox, ComboBox, QualificationModal } from '../components';
 import { AppState } from '../store';
 import { setQualification } from '../store/Actions';
 import { Qualification } from '../store/types';
+import { handleAndroidBackButton, removeAndroidBackButtonHandler } from './AndroidBackButton';
 import {
   isFinal,
   getQualificationLevel,
@@ -31,17 +37,20 @@ const nzQualificationLabels = [
 ];
 
 const QualificationScreen: React.FC<QualificationProps> = ({ route, navigation, appState, setQualification }) => {
+  const [isOpenInfo, setIsOpenInfo] = React.useState(false);
   const [qualificationLevel, setQualificationLevel] = React.useState(getQualificationLevel(appState));
   const [hasQualificationInNZ, setHasQualificationInNZ] = React.useState(getHasQualificationInNZ(appState));
   const [startedBefore25July2011, setStartedBefore25July2011] = React.useState(getStartedBefore25July2011(appState));
   const [recognisedLevel, setRecognisedLevel] = React.useState(getRecognisedLevel(appState));
+  const subject = new Subject<string>();
 
   const onPrev = () => {
-    isFinal(appState) ? navigation.push('Result') : navigation.goBack();
+    navigation.goBack();
+    setQualification({ qualificationLevel, hasQualificationInNZ, startedBefore25July2011, recognisedLevel });
   };
 
   const onNext = () => {
-    navigation.push(isFinal(appState) ? 'Result' : 'Experience');
+    isFinal(appState) ? navigation.goBack() : navigation.push('Experience');
     setQualification({ qualificationLevel, hasQualificationInNZ, startedBefore25July2011, recognisedLevel });
   };
 
@@ -64,21 +73,42 @@ const QualificationScreen: React.FC<QualificationProps> = ({ route, navigation, 
     setRecognisedLevel(-1);
   };
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <TouchableOpacity style={styles.navItem} onPress={onPrev}>
+        <TouchableOpacity style={styles.navItem} onPress={() => subject.next('onPrev')}>
           <FontAwesomeIcon icon={faChevronLeft} />
         </TouchableOpacity>
       ),
       headerRight: () => (
-        <TouchableOpacity style={styles.navItem} disabled={!canMoveNext()} onPress={onNext}>
-          <Text style={{ ...styles.navItemText, opacity: canMoveNext() ? 1 : 0.5 }}>
-            {isFinal(appState) ? 'Done' : 'Next'}
-          </Text>
+        <TouchableOpacity style={styles.navItem} onPress={() => subject.next('onNext')}>
+          <Text style={styles.navItemText}>{isFinal(appState) ? 'Done' : canMoveNext() ? 'Next' : 'Skip'}</Text>
         </TouchableOpacity>
       ),
     });
+
+    subject.pipe(debounceTime(300, asyncScheduler)).subscribe((v) => {
+      if (v === 'openInfo') {
+        setIsOpenInfo(true);
+      } else if (v === 'onNext') {
+        onNext();
+      } else {
+        onPrev();
+      }
+    });
+
+    handleAndroidBackButton(() => {
+      if (isOpenInfo) {
+        setIsOpenInfo(false);
+      } else {
+        subject.next('onPrev');
+      }
+    });
+
+    return () => {
+      subject.unsubscribe();
+      removeAndroidBackButtonHandler();
+    };
   });
 
   return (
@@ -89,9 +119,9 @@ const QualificationScreen: React.FC<QualificationProps> = ({ route, navigation, 
           <View style={styles.container}>
             <View style={styles.titleContainer}>
               <Text style={styles.titleText}>Qualification</Text>
-              <View style={styles.titleIconCircle}>
+              <TouchableOpacity style={styles.titleIconCircle} onPress={() => subject.next('openInfo')}>
                 <FontAwesomeIcon icon={faInfo} size={8} style={styles.titleIcon} />
-              </View>
+              </TouchableOpacity>
             </View>
             <ComboBox
               data={qualifications}
@@ -129,6 +159,16 @@ const QualificationScreen: React.FC<QualificationProps> = ({ route, navigation, 
             )}
           </View>
         </ScrollView>
+        <View style={styles.banner}>
+          <BannerAd
+            unitId={ADMOB_CONFIG.admob_banner_app_id}
+            size={BannerAdSize.SMART_BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
+        </View>
+        <QualificationModal visible={isOpenInfo} onClose={() => setIsOpenInfo(false)} />
       </SafeAreaView>
     </>
   );
@@ -150,7 +190,13 @@ const styles = StyleSheet.create({
     marginRight: 28,
   },
   navItemText: {
+    color: '#5233FF',
+    fontFamily: 'Avenir-Medium',
+    fontSize: 14,
+  },
+  navItemTextDisabled: {
     color: 'rgb(0, 0, 0)',
+    opacity: 0.5,
     fontFamily: 'Avenir-Medium',
     fontSize: 14,
   },
@@ -186,6 +232,9 @@ const styles = StyleSheet.create({
   },
   titleIcon: {
     color: 'rgb(56, 59, 65)',
+  },
+  banner: {
+    alignSelf: 'center',
   },
 });
 

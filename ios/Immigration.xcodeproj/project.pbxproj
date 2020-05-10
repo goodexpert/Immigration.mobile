@@ -20,6 +20,7 @@
 		646F1529AFA2F2C64FC66E51 /* libPods-Immigration-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A468C8B5DBB9FD29A2C3016D /* libPods-Immigration-tvOS.a */; };
 		79E640F70508090F45302C79 /* libPods-Immigration-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3761BAE47B84EAD4F0E6B478 /* libPods-Immigration-tvOSTests.a */; };
 		801FC3912466983000D809D0 /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 801FC3902466983000D809D0 /* AppCenter-Config.plist */; };
+		801FC3932466A1CC00D809D0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 801FC3922466A1CC00D809D0 /* GoogleService-Info.plist */; };
 		A07CDB07651211DAE657D921 /* libPods-Immigration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 913DEF4FE8D17115A79AFFB6 /* libPods-Immigration.a */; };
 /* End PBXBuildFile section */
 
@@ -60,6 +61,7 @@
 		6897969D237C7E82BDA061C0 /* Pods-Immigration-ImmigrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Immigration-ImmigrationTests.release.xcconfig"; path = "Target Support Files/Pods-Immigration-ImmigrationTests/Pods-Immigration-ImmigrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		76DEA9CC8D2F6AAABB57BB63 /* Pods-Immigration-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Immigration-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-Immigration-tvOS/Pods-Immigration-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		801FC3902466983000D809D0 /* AppCenter-Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "AppCenter-Config.plist"; path = "Immigration/AppCenter-Config.plist"; sourceTree = "<group>"; };
+		801FC3922466A1CC00D809D0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Immigration/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		913DEF4FE8D17115A79AFFB6 /* libPods-Immigration.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Immigration.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A468C8B5DBB9FD29A2C3016D /* libPods-Immigration-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Immigration-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDA6F1C7253D445184DC5BE0 /* Pods-Immigration-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Immigration-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-Immigration-tvOSTests/Pods-Immigration-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				801FC3902466983000D809D0 /* AppCenter-Config.plist */,
+				801FC3922466A1CC00D809D0 /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -294,6 +297,7 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = H42DNSF7Q3;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
@@ -302,10 +306,12 @@
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = H42DNSF7Q3;
 						ProvisioningStyle = Automatic;
 					};
 					2D02E48F1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = H42DNSF7Q3;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 2D02E47A1E0B4A5D006451C7;
 					};
@@ -345,6 +351,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				801FC3932466A1CC00D809D0 /* GoogleService-Info.plist in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				801FC3912466983000D809D0 /* AppCenter-Config.plist in Resources */,
 			);
@@ -650,7 +657,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = nz.co.pieme.apps.IpcTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Immigration.app/Immigration";
 			};
@@ -670,7 +677,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = nz.co.pieme.apps.IpcTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Immigration.app/Immigration";
 			};
@@ -682,6 +689,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = H42DNSF7Q3;
 				ENABLE_BITCODE = NO;
@@ -696,8 +705,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = nz.co.pieme.apps.Ipc;
 				PRODUCT_NAME = Immigration;
+				PROVISIONING_PROFILE_SPECIFIER = "Apple Development";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -710,6 +720,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = H42DNSF7Q3;
 				INFOPLIST_FILE = Immigration/Info.plist;
@@ -719,8 +731,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = nz.co.pieme.apps.Ipc;
 				PRODUCT_NAME = Immigration;
+				PROVISIONING_PROFILE_SPECIFIER = "NZIPC Ad Hoc Distribution";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -867,6 +880,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = H42DNSF7Q3;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -893,7 +907,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = nz.co.pieme.apps.ipc;
+				PRODUCT_BUNDLE_IDENTIFIER = nz.co.pieme.apps.Ipc;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -929,6 +943,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
+				DEVELOPMENT_TEAM = H42DNSF7Q3;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -947,7 +962,8 @@
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = nz.co.pieme.apps.ipc;
+				PRODUCT_BUNDLE_IDENTIFIER = nz.co.pieme.apps.Ipc;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};

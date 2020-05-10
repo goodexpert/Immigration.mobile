@@ -8,6 +8,8 @@
 #import <AppCenterReactNativeAnalytics.h>
 #import <AppCenterReactNativeCrashes.h>
 
+#import <Firebase.h>
+
 #if DEBUG
 #import <FlipperKit/FlipperClient.h>
 #import <FlipperKitLayoutPlugin/FlipperKitLayoutPlugin.h>
@@ -34,6 +36,13 @@ static void InitializeFlipper(UIApplication *application) {
   [AppCenterReactNative register];
   [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];
   [AppCenterReactNativeCrashes registerWithAutomaticProcessing];
+
+  // Use Firebase library to configure APIs.
+  if ([FIRApp defaultApp] == nil) {
+    [FIRApp configure];
+  }
+  // Initialize the Google Mobile Ads SDK.
+  [[GADMobileAds sharedInstance] startWithCompletionHandler:nil];
 
 #if DEBUG
   InitializeFlipper(application);

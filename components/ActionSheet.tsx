@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     paddingTop: 6,
     paddingBottom: 6,
+    letterSpacing: 0,
   },
   titleLayout: {
     backgroundColor: 'white',
@@ -124,6 +125,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir-Medium',
     fontSize: 16,
     fontWeight: '600',
+    letterSpacing: 0,
   },
   separator: {
     backgroundColor: 'lightgrey',
@@ -143,6 +145,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir-Medium',
     fontSize: 16,
     fontWeight: '600',
+    letterSpacing: 0,
   },
 });
 

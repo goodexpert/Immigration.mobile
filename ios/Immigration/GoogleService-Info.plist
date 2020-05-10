@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>575477282-1fstm9hpslj3k8tibvlt6dspn76lct47.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.575477282-1fstm9hpslj3k8tibvlt6dspn76lct47</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>575477282-dg35g2g1jsm7a5lr6bj8hdmunbdi3i2f.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBU65AqUuztBteq-IZQhej6ilq9lNAYFMU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>575477282</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>nz.co.pieme.apps.Ipc</string>
+	<key>PROJECT_ID</key>
+	<string>immigration-points-calculator</string>
+	<key>STORAGE_BUCKET</key>
+	<string>immigration-points-calculator.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:575477282:ios:c07057d2d7a57e396cdc7b</string>
+	<key>DATABASE_URL</key>
+	<string>https://immigration-points-calculator.firebaseio.com</string>
+	<key>ADMOB_APP_ID</key>
+	<string>ca-app-pub-3542184687162386~5101068382</string>
+</dict>
+</plist>

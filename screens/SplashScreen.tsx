@@ -9,30 +9,87 @@
  */
 
 import React from 'react';
-import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar } from 'react-native';
+import { SafeAreaView, StyleSheet, View, Text, StatusBar } from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import admob, { MaxAdContentRating, TestIds } from '@react-native-firebase/admob';
+import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
+import { asyncScheduler, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
+import { ADMOB_CONFIG } from '../global';
 import { SplashProps } from './types';
 
 const SplashScreen: React.FC<SplashProps> = ({ route, navigation }) => {
+  // const [isInitialized, setIsInialized] = React.useState(false);
+  // const [isLoading, setIsLoading] = React.useState(false);
+  const subject = new Subject<string>();
+
   const onNext = () => {
     navigation.push('Identity');
   };
+
+  React.useEffect(() => {
+    subject.pipe(debounceTime(300, asyncScheduler)).subscribe((v) => {
+      if (v === 'onNext') {
+        onNext();
+      }
+    });
+
+    return () => {
+      subject.unsubscribe();
+    };
+  });
+
+  // React.useEffect(() => {
+  //   if (!isLoading && !isInitialized) {
+  //     setIsLoading(true);
+  //     admob()
+  //       .setRequestConfiguration({
+  //         // Update all future requests suitable for parental guidance
+  //         maxAdContentRating: MaxAdContentRating.PG,
+  //         // Indicates that you want your content treated as child-directed for purposes of COPPA.
+  //         tagForChildDirectedTreatment: true,
+  //         // Indicates that you want the ad request to be handled in a
+  //         // manner suitable for users under the age of consent.
+  //         tagForUnderAgeOfConsent: true,
+  //       })
+  //       .then(() => {
+  //         // Request config successfully set!
+  //         console.info('Request config successfully');
+  //         setIsInialized(true);
+  //         setIsLoading(false);
+  //       })
+  //       .catch((error) => {
+  //         console.error(error);
+  //         setIsLoading(false);
+  //       });
+  //   }
+  //   console.log('TestIds.BANNER', TestIds.BANNER);
+  //   console.log('admob_banner_app_id', ADMOB_CONFIG.admob_banner_app_id);
+  // }, [isLoading, isInitialized]);
 
   return (
     <>
       <StatusBar barStyle='dark-content' />
       <SafeAreaView style={styles.content}>
-        <ScrollView contentInsetAdjustmentBehavior='automatic' style={styles.scrollView}>
-          <View style={styles.container}>
-            <Text style={styles.text}>New Zealand Skilled Migrant Points Calculator</Text>
+        <View style={styles.container}>
+          <View style={styles.banner}>
+            <BannerAd
+              unitId={ADMOB_CONFIG.admob_banner_app_id}
+              size={BannerAdSize.SMART_BANNER}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true,
+              }}
+            />
           </View>
-        </ScrollView>
-        <TouchableOpacity style={styles.button} onPress={onNext}>
-          <Text style={styles.buttonText}>Get started</Text>
-        </TouchableOpacity>
+          <Text style={styles.text}>New Zealand Skilled Migrant Points Calculator</Text>
+          <TouchableOpacity style={styles.button} onPress={() => subject.next('onNext')}>
+            <Text style={styles.buttonText}>Get started</Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     </>
   );
@@ -43,26 +100,25 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.lighter,
     flex: 1,
   },
-  scrollView: {
-    backgroundColor: Colors.lighter,
-    flex: 1,
-    flexDirection: 'column',
-  },
   container: {
     backgroundColor: Colors.lighter,
     flex: 1,
-    justifyContent: 'center',
     marginBottom: 100,
     minHeight: '90%',
   },
+  banner: {
+    alignSelf: 'center',
+    position: 'absolute',
+  },
   text: {
-    color: 'rgb(0, 0, 0)',
     fontFamily: 'Avenir-Black',
     fontSize: 36,
     fontWeight: '900',
     letterSpacing: 0,
     marginLeft: 32,
     marginRight: 48,
+    marginTop: 'auto',
+    marginBottom: 'auto',
   },
   button: {
     backgroundColor: 'rgb(82, 51, 255)',

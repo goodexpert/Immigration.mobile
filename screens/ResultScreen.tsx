@@ -1,40 +1,74 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar } from 'react-native';
+import { Dispatch } from 'redux';
+import {
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  StatusBar,
+  Share,
+  ShareContent,
+} from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { TouchableOpacity, FlatList } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faChevronLeft, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
-import { ResultItem, ResultProps } from './types';
+import { asyncScheduler, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
+import { ResultItem, ResultProps, ScreenName } from './types';
 import { makeResults, makeTotalPoints } from './utils';
 
 import SadIcon from '../assets/img/sad-icon.svg';
 import SmileIcon from '../assets/img/smile-icon.svg';
 import { AppState } from '../store';
-import { clear } from '../store/Actions';
+import { reset } from '../store/Actions';
 
-const ResultScreen: React.FC<ResultProps> = ({ route, navigation, appState, clear }) => {
-  const [results] = React.useState<Array<ResultItem>>(makeResults(appState));
-  const [totalPoints] = React.useState(makeTotalPoints(makeResults(appState)));
+const ResultScreen: React.FC<ResultProps> = ({ route, navigation, appState, reset }) => {
+  const [results, setResults] = React.useState<Array<ResultItem>>(makeResults(appState));
+  const [totalPoints, setTotalPoints] = React.useState(makeTotalPoints(makeResults(appState)));
+  const subject = new Subject<string>();
 
-  const onClear = () => {
-    clear();
+  const shareContent = Platform.select({
+    android: {
+      title: 'New Zealand Skilled Migrant Points Calculator',
+    },
+    ios: {
+      title: 'New Zealand Skilled Migrant Points Calculator',
+      url: 'https://youtube.com',
+    },
+    default: {
+      message: `My New Zealand immigration points is ${totalPoints}`,
+    },
+  }) as ShareContent;
+
+  const onReset = () => {
+    reset();
     navigation.navigate('Splash');
   };
 
-  const onShare = () => {
-    navigation.navigate('Splash');
+  const onShare = async () => {
+    try {
+      const result = await Share.share(shareContent);
+      if (result.action === Share.sharedAction) {
+      }
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
-  const onClickedItem = (item: ResultItem) => {
-    navigation.push(item.screen);
+  const onClickedItem = (screenName: ScreenName) => {
+    navigation.push(screenName);
   };
 
-  const renderItem = (item: ResultItem) => {
+  const renderItem = (item: ResultItem, index: number) => {
     return (
-      <TouchableOpacity style={styles.resultItem} onPress={() => onClickedItem(item)}>
+      <TouchableOpacity key={index} style={styles.resultItem} onPress={() => subject.next(item.screen)}>
         <Text style={styles.resultItemTitleText}>{item.title}</Text>
         <Text style={styles.resultItemPointsText}>{item.value}pt</Text>
         <View style={styles.resultItemIconCircle}>
@@ -44,18 +78,40 @@ const ResultScreen: React.FC<ResultProps> = ({ route, navigation, appState, clea
     );
   };
 
-  React.useLayoutEffect(() => {
+  const checkAndUpdate = () => {
+    const result = makeResults(appState);
+    const points = makeTotalPoints(result);
+    if (points !== totalPoints) {
+      setResults(result);
+      setTotalPoints(points);
+    }
+  };
+
+  React.useEffect(() => {
     navigation.setOptions({
       headerLeft: () => <></>,
       headerRight: () => (
-        <TouchableOpacity style={styles.navItem} onPress={onShare}>
+        <TouchableOpacity style={styles.navItem} onPress={() => subject.next('onShare')}>
           <Text style={styles.navItemText}>{'Share'}</Text>
         </TouchableOpacity>
       ),
     });
-  });
+    checkAndUpdate();
 
-  console.log('current', appState);
+    subject.pipe(debounceTime(300, asyncScheduler)).subscribe((v) => {
+      if (v === 'onReset') {
+        onReset();
+      } else if (v === 'onShare') {
+        onShare();
+      } else {
+        onClickedItem(v as ScreenName);
+      }
+    });
+
+    return () => {
+      subject.unsubscribe();
+    };
+  });
 
   return (
     <>
@@ -72,15 +128,10 @@ const ResultScreen: React.FC<ResultProps> = ({ route, navigation, appState, clea
               </View>
               <View style={styles.spaceView} />
             </View>
-            <FlatList<ResultItem>
-              data={results}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => renderItem(item)}
-              scrollEnabled={false}
-            />
+            <View>{results.map((item, index) => renderItem(item, index))}</View>
           </View>
         </ScrollView>
-        <TouchableOpacity style={styles.button} onPress={onClear}>
+        <TouchableOpacity style={styles.button} onPress={() => subject.next('onReset')}>
           <Text style={styles.buttonText}>Reset</Text>
         </TouchableOpacity>
       </SafeAreaView>
@@ -104,7 +155,7 @@ const styles = StyleSheet.create({
     marginRight: 28,
   },
   navItemText: {
-    color: 'rgb(0, 0, 0)',
+    color: '#5233FF',
     fontFamily: 'Avenir-Medium',
     fontSize: 14,
   },
@@ -134,10 +185,13 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir-Black',
     fontSize: 60,
     fontWeight: '900',
+    letterSpacing: 0,
   },
   pointsLabelText: {
     fontFamily: 'Avenir-Medium',
     fontSize: 14,
+    letterSpacing: 0,
+    marginTop: -16,
   },
   spaceView: {
     minWidth: 10,
@@ -206,7 +260,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  clear: () => dispatch(clear()),
+  reset: () => dispatch(reset()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ResultScreen);

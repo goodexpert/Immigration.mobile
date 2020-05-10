@@ -30,7 +30,7 @@ export interface CheckBoxProps extends ViewProps {
   /**
    * The label of the checkbox.
    */
-  label?: string;
+  label?: string | Element;
 
   /**
    * The value of the checkbox. If true the checkbox will be turned on. Default value is false.
@@ -63,7 +63,7 @@ const CheckBox: React.FC<CheckBoxProps> = (props) => {
   return (
     <TouchableOpacity style={styles.checkBoxContainer} disabled={props.disabled} onPress={onClicked}>
       <FontAwesomeIcon icon={getValueIcon()} style={styles.checkBoxIcon} />
-      <Text>{props.label}</Text>
+      <Text style={styles.labelText}>{props.label}</Text>
     </TouchableOpacity>
   );
 };
@@ -85,6 +85,12 @@ const styles = StyleSheet.create({
   checkBoxIcon: {
     color: 'rgb(56, 59, 65)',
     marginRight: 8,
+  },
+  labelText: {
+    color: 'black',
+    fontFamily: 'Avenir-Medium',
+    fontSize: 14,
+    letterSpacing: 0,
   },
 });
 

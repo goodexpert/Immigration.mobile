@@ -71,7 +71,7 @@ const ComboBox: React.FC<ComboBoxProps> = (props) => {
   return (
     <>
       <TouchableOpacity style={styles.comboBoxContainer} onPress={() => setVisiblePicker(true)}>
-        <Text style={styles.comboBoxTitle}>{getTextLabel()}</Text>
+        <Text style={selectedIndex === -1 ? styles.placeHolderTextColor : styles.labelText}>{getTextLabel()}</Text>
         <FontAwesomeIcon icon={faChevronDown} style={styles.comboBoxIcon} />
       </TouchableOpacity>
       <ActionSheet
@@ -94,8 +94,14 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgb(0, 0, 0)',
     borderBottomWidth: 1.0,
   },
-  comboBoxTitle: {
+  placeHolderTextColor: {
     color: 'rgba(26, 24, 36, 0.5)',
+    fontFamily: 'Avenir-Medium',
+    fontSize: 16,
+    letterSpacing: 0,
+  },
+  labelText: {
+    color: 'black',
     fontFamily: 'Avenir-Medium',
     fontSize: 16,
     letterSpacing: 0,

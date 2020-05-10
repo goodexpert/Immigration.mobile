@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import {
   SplashScreen,
   IdentityScreen,
@@ -32,37 +32,61 @@ const App: React.FC = () => {
         <Stack.Screen
           name='Splash'
           component={SplashScreen}
-          options={{ title: 'NZ Immigration', headerShown: false }}
+          options={{ title: 'NZ Immigration', headerShown: false, ...TransitionPresets.SlideFromRightIOS }}
         />
         <Stack.Screen
           name='Identity'
           component={IdentityScreen}
-          options={{ title: 'NZ Immigration', headerStyle: { backgroundColor: Colors.lighter } }}
+          options={{
+            title: 'NZ Immigration',
+            headerStyle: { backgroundColor: Colors.lighter },
+            ...TransitionPresets.SlideFromRightIOS,
+          }}
         />
         <Stack.Screen
           name='Qualification'
           component={QualificationScreen}
-          options={{ title: 'NZ Immigration', headerStyle: { backgroundColor: Colors.lighter } }}
+          options={{
+            title: 'NZ Immigration',
+            headerStyle: { backgroundColor: Colors.lighter },
+            ...TransitionPresets.SlideFromRightIOS,
+          }}
         />
         <Stack.Screen
           name='Experience'
           component={ExperienceScreen}
-          options={{ title: 'NZ Immigration', headerStyle: { backgroundColor: Colors.lighter } }}
+          options={{
+            title: 'NZ Immigration',
+            headerStyle: { backgroundColor: Colors.lighter },
+            ...TransitionPresets.SlideFromRightIOS,
+          }}
         />
         <Stack.Screen
           name='Employment'
           component={EmploymentScreen}
-          options={{ title: 'NZ Immigration', headerStyle: { backgroundColor: Colors.lighter } }}
+          options={{
+            title: 'NZ Immigration',
+            headerStyle: { backgroundColor: Colors.lighter },
+            ...TransitionPresets.SlideFromRightIOS,
+          }}
         />
         <Stack.Screen
           name='Partner'
           component={PartnerScreen}
-          options={{ title: 'NZ Immigration', headerStyle: { backgroundColor: Colors.lighter } }}
+          options={{
+            title: 'NZ Immigration',
+            headerStyle: { backgroundColor: Colors.lighter },
+            ...TransitionPresets.SlideFromRightIOS,
+          }}
         />
         <Stack.Screen
           name='Result'
           component={ResultScreen}
-          options={{ title: 'NZ Immigration', headerStyle: { backgroundColor: Colors.lighter } }}
+          options={{
+            title: 'NZ Immigration',
+            headerStyle: { backgroundColor: Colors.lighter },
+            ...TransitionPresets.SlideFromRightIOS,
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

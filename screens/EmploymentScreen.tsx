@@ -6,16 +6,23 @@ import { SafeAreaView, StyleSheet, ScrollView, View, Text, TextInput, StatusBar,
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faChevronLeft, faInfo } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
+import { asyncScheduler, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
+import { ADMOB_CONFIG } from '../global';
 import { EmploymentProps } from './types';
-import { CheckBox, ComboBox } from '../components';
+import { CheckBox, ComboBox, SkillsShortageModal } from '../components';
 import { AppState } from '../store';
 import { setEmployment } from '../store/Actions';
 import { Employment } from '../store/types';
+import { handleAndroidBackButton, removeAndroidBackButtonHandler } from './AndroidBackButton';
 import {
   isFinal,
-  getEmploymentSelectType,
+  getHasJobInNZ,
+  getHasJobOfferInNZ,
   getHasEmpoymentExperienceInASS,
   getWorkOutsideAuckland,
   getWorkType,
@@ -28,22 +35,19 @@ import WorkingIcon from '../assets/img/working-icon.svg';
 const workTypes = ['Full time', 'Part time', 'Contract', 'Casual'];
 
 const EmploymentScreen: React.FC<EmploymentProps> = ({ route, navigation, appState, setEmployment }) => {
-  const [selectedType, setSelectedType] = React.useState(getEmploymentSelectType(appState));
+  const [isOpenAssInfo, setIsOpenAssInfo] = React.useState(false);
+  const [hasJobInNZ, setHasJobInNZ] = React.useState(getHasJobInNZ(appState));
+  const [hasJobOfferInNZ, setHasJobOfferInNZ] = React.useState(getHasJobOfferInNZ(appState));
   const [hasWorkExperienceInASS, setHasWorkExperienceInASS] = React.useState(getHasEmpoymentExperienceInASS(appState));
   const [workOutsideAuckland, setWorkOutsideAuckland] = React.useState(getWorkOutsideAuckland(appState));
   const [workType, setWorkType] = React.useState(getWorkType(appState));
   const [hourlyRate, setHourlyRate] = React.useState(getHourlyRate(appState));
-  const colorScheme = Appearance.getColorScheme();
+  const subject = new Subject<string>();
 
-  const onPrev = () => {
-    isFinal(appState) ? navigation.push('Result') : navigation.goBack();
-  };
-
-  const onNext = () => {
-    navigation.push(isFinal(appState) ? 'Result' : 'Partner');
+  const saveState = () => {
     setEmployment({
-      hasJobInNZ: selectedType === 0,
-      hasJobOfferInNZ: selectedType === 1,
+      hasJobInNZ,
+      hasJobOfferInNZ,
       hasWorkExperienceInASS,
       workOutsideAuckland,
       workType,
@@ -51,20 +55,28 @@ const EmploymentScreen: React.FC<EmploymentProps> = ({ route, navigation, appSta
     });
   };
 
+  const onPrev = () => {
+    saveState();
+    navigation.goBack();
+  };
+
+  const onNext = () => {
+    saveState();
+    isFinal(appState) ? navigation.goBack() : navigation.push('Partner');
+  };
+
   const canMoveNext = () => {
-    return true;
-  };
-
-  const isWorking = () => {
-    return selectedType === 0;
-  };
-
-  const hasJobOffer = () => {
-    return selectedType === 1;
+    return (!hasJobInNZ && !hasJobOfferInNZ) || workType !== -1;
   };
 
   const onChangeSelectType = (index: number) => {
-    setSelectedType(index === selectedType ? -1 : index);
+    if (index === 0) {
+      setHasJobInNZ(hasJobInNZ !== true);
+      setHasJobOfferInNZ(false);
+    } else {
+      setHasJobInNZ(false);
+      setHasJobOfferInNZ(hasJobOfferInNZ !== true);
+    }
   };
 
   const onItemSelectedWorkType = (index: number) => {
@@ -74,26 +86,47 @@ const EmploymentScreen: React.FC<EmploymentProps> = ({ route, navigation, appSta
   const onChangeText = (text: string) => {
     const matcher = /^[+-]?\d+(\.)?(\d+)?$/;
 
-    if (matcher.test(text)) {
+    if (matcher.test(text) || text.length === 0) {
       setHourlyRate(text);
     }
   };
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <TouchableOpacity style={styles.navItem} onPress={onPrev}>
+        <TouchableOpacity style={styles.navItem} onPress={() => subject.next('onPrev')}>
           <FontAwesomeIcon icon={faChevronLeft} />
         </TouchableOpacity>
       ),
       headerRight: () => (
-        <TouchableOpacity style={styles.navItem} disabled={!canMoveNext()} onPress={onNext}>
-          <Text style={{ ...styles.navItemText, opacity: canMoveNext() ? 1 : 0.5 }}>
-            {isFinal(appState) ? 'Done' : 'Next'}
-          </Text>
+        <TouchableOpacity style={styles.navItem} onPress={() => subject.next('onNext')}>
+          <Text style={styles.navItemText}>{isFinal(appState) ? 'Done' : canMoveNext() ? 'Next' : 'Skip'}</Text>
         </TouchableOpacity>
       ),
     });
+
+    subject.pipe(debounceTime(300, asyncScheduler)).subscribe((v) => {
+      if (v === 'openAssInfo') {
+        setIsOpenAssInfo(true);
+      } else if (v === 'onNext') {
+        onNext();
+      } else {
+        onPrev();
+      }
+    });
+
+    handleAndroidBackButton(() => {
+      if (isOpenAssInfo) {
+        setIsOpenAssInfo(false);
+      } else {
+        subject.next('onPrev');
+      }
+    });
+
+    return () => {
+      subject.unsubscribe();
+      removeAndroidBackButtonHandler();
+    };
   });
 
   return (
@@ -104,14 +137,11 @@ const EmploymentScreen: React.FC<EmploymentProps> = ({ route, navigation, appSta
           <View style={styles.container}>
             <View style={styles.titleContainer}>
               <Text style={styles.titleText}>Skilled employment</Text>
-              <View style={styles.titleIconCircle}>
-                <FontAwesomeIcon icon={faInfo} size={8} style={styles.titleIcon} />
-              </View>
             </View>
             <View style={styles.row}>
               <View style={styles.column}>
                 <TouchableOpacity
-                  style={isWorking() ? styles.buttonSelected : styles.button}
+                  style={hasJobInNZ ? styles.buttonSelected : styles.button}
                   onPress={() => onChangeSelectType(0)}
                 >
                   <WorkingIcon width={44} height={44} />
@@ -122,7 +152,7 @@ const EmploymentScreen: React.FC<EmploymentProps> = ({ route, navigation, appSta
               <View style={{ width: 10 }} />
               <View style={styles.column}>
                 <TouchableOpacity
-                  style={hasJobOffer() ? styles.buttonSelected : styles.button}
+                  style={hasJobOfferInNZ ? styles.buttonSelected : styles.button}
                   onPress={() => onChangeSelectType(1)}
                 >
                   <OfferIcon width={44} height={44} />
@@ -137,19 +167,29 @@ const EmploymentScreen: React.FC<EmploymentProps> = ({ route, navigation, appSta
               onItemSelected={onItemSelectedWorkType}
               selectedIndex={workType}
             />
-            <TextInput
-              keyboardType='numeric'
-              isDarkModeEnabled={false}
-              placeholder={'Hourly rate (NZD)'}
-              style={styles.textInput}
-              underlineColorAndroid='transparent'
-              onChangeText={onChangeText}
-              value={hourlyRate}
-            />
+            <View style={styles.textInputGroup}>
+              <Text style={styles.textLabel}>$</Text>
+              <TextInput
+                keyboardType='numeric'
+                placeholder={'Hourly rate (NZD)'}
+                placeholderTextColor={'rgba(26, 24, 36, 0.5)'}
+                style={styles.textInput}
+                underlineColorAndroid='transparent'
+                onChangeText={onChangeText}
+                value={hourlyRate}
+              />
+            </View>
             <CheckBox
               value={hasWorkExperienceInASS}
               onValueChange={setHasWorkExperienceInASS}
-              label={'I work in an area of absolute skills shortage'}
+              label={
+                <Text>
+                  I work in an area of{' '}
+                  <Text style={styles.linkText} onPress={() => setIsOpenAssInfo(true)}>
+                    absolute skills shortage
+                  </Text>
+                </Text>
+              }
             />
             <CheckBox
               value={workOutsideAuckland}
@@ -158,6 +198,16 @@ const EmploymentScreen: React.FC<EmploymentProps> = ({ route, navigation, appSta
             />
           </View>
         </ScrollView>
+        <View style={styles.banner}>
+          <BannerAd
+            unitId={ADMOB_CONFIG.admob_banner_app_id}
+            size={BannerAdSize.SMART_BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
+        </View>
+        <SkillsShortageModal visible={isOpenAssInfo} onClose={() => setIsOpenAssInfo(false)} />
       </SafeAreaView>
     </>
   );
@@ -179,7 +229,13 @@ const styles = StyleSheet.create({
     marginRight: 28,
   },
   navItemText: {
+    color: '#5233FF',
+    fontFamily: 'Avenir-Medium',
+    fontSize: 14,
+  },
+  navItemTextDisabled: {
     color: 'rgb(0, 0, 0)',
+    opacity: 0.5,
     fontFamily: 'Avenir-Medium',
     fontSize: 14,
   },
@@ -215,6 +271,9 @@ const styles = StyleSheet.create({
   },
   titleIcon: {
     color: 'rgb(56, 59, 65)',
+  },
+  linkText: {
+    color: '#5233ff',
   },
   row: {
     flexDirection: 'row',
@@ -256,12 +315,31 @@ const styles = StyleSheet.create({
     fontSize: 14,
     letterSpacing: 0,
   },
-  textInput: {
-    color: 'black',
-    minHeight: 38,
+  textInputGroup: {
+    flexDirection: 'row',
+    alignContent: 'center',
     marginBottom: 12,
     borderBottomColor: 'rgb(0, 0, 0)',
     borderBottomWidth: 1.0,
+  },
+  textInput: {
+    flex: 1,
+    color: 'black',
+    fontFamily: 'Avenir-Medium',
+    fontSize: 16,
+    letterSpacing: 0,
+    minHeight: 38,
+  },
+  textLabel: {
+    color: 'black',
+    fontFamily: 'Avenir-Medium',
+    fontSize: 16,
+    letterSpacing: 0,
+    alignSelf: 'center',
+    marginRight: 4,
+  },
+  banner: {
+    alignSelf: 'center',
   },
 });
 

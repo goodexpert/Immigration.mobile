@@ -7,12 +7,18 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft, faInfo } from '@fortawesome/free-solid-svg-icons';
+import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
+import { asyncScheduler, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
+import { ADMOB_CONFIG } from '../global';
 import { ExperienceProps } from './types';
-import { CheckBox, ComboBox } from '../components';
+import { CheckBox, ComboBox, ExperienceModal, SkillsShortageModal } from '../components';
 import { AppState } from '../store';
 import { WorkExperience } from '../store/types';
 import { setWorkExperience } from '../store/Actions';
+import { handleAndroidBackButton, removeAndroidBackButtonHandler } from './AndroidBackButton';
 import {
   isFinal,
   getWorkExperienceYears,
@@ -25,17 +31,26 @@ const workExperiences = ['2 - 4 years', '4 - 6 years', '6 - 8 years', '8 - 10 ye
 const workExperiencesInASS = ['2-5 years', '6 years or more'];
 
 const ExperienceScreen: React.FC<ExperienceProps> = ({ route, navigation, appState, setWorkExperience }) => {
+  const [isOpenInfo, setIsOpenInfo] = React.useState(false);
+  const [isOpenAssInfo, setIsOpenAssInfo] = React.useState(false);
   const [workExperienceYears, setWorkExperienceYears] = React.useState(getWorkExperienceYears(appState));
   const [hasWorkExperienceInNZ, setHasWorkExperienceInNZ] = React.useState(getHasWorkExperienceInNZ(appState));
   const [hasWorkExperienceInASS, setHasWorkExperienceInASS] = React.useState(getHasWorkExperienceInASS(appState));
   const [workExperienceYearsInASS, setWorkExperienceYearsInASS] = React.useState(getWorkExperienceYearsInASS(appState));
+  const subject = new Subject<string>();
 
   const onPrev = () => {
-    isFinal(appState) ? navigation.push('Result') : navigation.goBack();
+    navigation.goBack();
+    setWorkExperience({
+      workExperienceYears,
+      hasWorkExperienceInNZ,
+      hasWorkExperienceInASS,
+      workExperienceYearsInASS,
+    });
   };
 
   const onNext = () => {
-    navigation.push(isFinal(appState) ? 'Result' : 'Employment');
+    isFinal(appState) ? navigation.goBack() : navigation.push('Employment');
     setWorkExperience({
       workExperienceYears,
       hasWorkExperienceInNZ,
@@ -63,21 +78,46 @@ const ExperienceScreen: React.FC<ExperienceProps> = ({ route, navigation, appSta
     }
   };
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <TouchableOpacity style={styles.navItem} onPress={onPrev}>
+        <TouchableOpacity style={styles.navItem} onPress={() => subject.next('onPrev')}>
           <FontAwesomeIcon icon={faChevronLeft} />
         </TouchableOpacity>
       ),
       headerRight: () => (
-        <TouchableOpacity style={styles.navItem} disabled={!canMoveNext()} onPress={onNext}>
-          <Text style={{ ...styles.navItemText, opacity: canMoveNext() ? 1 : 0.5 }}>
-            {isFinal(appState) ? 'Done' : 'Next'}
-          </Text>
+        <TouchableOpacity style={styles.navItem} onPress={() => subject.next('onNext')}>
+          <Text style={styles.navItemText}>{isFinal(appState) ? 'Done' : canMoveNext() ? 'Next' : 'Skip'}</Text>
         </TouchableOpacity>
       ),
     });
+
+    subject.pipe(debounceTime(300, asyncScheduler)).subscribe((v) => {
+      if (v === 'openInfo') {
+        setIsOpenInfo(true);
+      } else if (v === 'openAssInfo') {
+        setIsOpenAssInfo(true);
+      } else if (v === 'onNext') {
+        onNext();
+      } else {
+        onPrev();
+      }
+    });
+
+    handleAndroidBackButton(() => {
+      if (isOpenInfo) {
+        setIsOpenInfo(false);
+      } else if (isOpenAssInfo) {
+        setIsOpenAssInfo(false);
+      } else {
+        subject.next('onPrev');
+      }
+    });
+
+    return () => {
+      subject.unsubscribe();
+      removeAndroidBackButtonHandler();
+    };
   });
 
   return (
@@ -88,9 +128,9 @@ const ExperienceScreen: React.FC<ExperienceProps> = ({ route, navigation, appSta
           <View style={styles.container}>
             <View style={styles.titleContainer}>
               <Text style={styles.titleText}>Work experience</Text>
-              <View style={styles.titleIconCircle}>
+              <TouchableOpacity style={styles.titleIconCircle} onPress={() => subject.next('openInfo')}>
                 <FontAwesomeIcon icon={faInfo} size={8} style={styles.titleIcon} />
-              </View>
+              </TouchableOpacity>
             </View>
             <ComboBox
               data={workExperiences}
@@ -108,7 +148,14 @@ const ExperienceScreen: React.FC<ExperienceProps> = ({ route, navigation, appSta
                 <CheckBox
                   value={hasWorkExperienceInASS}
                   onValueChange={onChangeHasWorkExperienceInASS}
-                  label={'I have work experience in an area of absolute skills shortage'}
+                  label={
+                    <Text>
+                      I have work experience in an area of{' '}
+                      <Text style={styles.linkText} onPress={() => setIsOpenAssInfo(true)}>
+                        absolute skills shortage
+                      </Text>
+                    </Text>
+                  }
                 />
               </>
             ) : (
@@ -117,7 +164,7 @@ const ExperienceScreen: React.FC<ExperienceProps> = ({ route, navigation, appSta
             {workExperienceYears !== -1 && hasWorkExperienceInASS ? (
               <View style={styles.subContainer}>
                 <ComboBox
-                  data={workExperiences}
+                  data={workExperiencesInASS}
                   placeholder={'Length of time'}
                   onItemSelected={onItemSelectedWorkExperienceInASS}
                   selectedIndex={workExperienceYearsInASS}
@@ -128,6 +175,17 @@ const ExperienceScreen: React.FC<ExperienceProps> = ({ route, navigation, appSta
             )}
           </View>
         </ScrollView>
+        <View style={styles.banner}>
+          <BannerAd
+            unitId={ADMOB_CONFIG.admob_banner_app_id}
+            size={BannerAdSize.SMART_BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
+        </View>
+        <ExperienceModal visible={isOpenInfo} onClose={() => setIsOpenInfo(false)} />
+        <SkillsShortageModal visible={isOpenAssInfo} onClose={() => setIsOpenAssInfo(false)} />
       </SafeAreaView>
     </>
   );
@@ -149,7 +207,13 @@ const styles = StyleSheet.create({
     marginRight: 28,
   },
   navItemText: {
+    color: '#5233FF',
+    fontFamily: 'Avenir-Medium',
+    fontSize: 14,
+  },
+  navItemTextDisabled: {
     color: 'rgb(0, 0, 0)',
+    opacity: 0.5,
     fontFamily: 'Avenir-Medium',
     fontSize: 14,
   },
@@ -189,6 +253,12 @@ const styles = StyleSheet.create({
   subContainer: {
     marginLeft: 24,
     marginTop: 20,
+  },
+  linkText: {
+    color: '#5233ff',
+  },
+  banner: {
+    alignSelf: 'center',
   },
 });
 

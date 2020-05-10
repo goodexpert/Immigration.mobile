@@ -70,16 +70,18 @@ export const getWorkExperienceYearsInASS = (state: ImmigrationState) => {
   return -1;
 };
 
-export const getEmploymentSelectType = (state: ImmigrationState) => {
+export const getHasJobInNZ = (state: ImmigrationState) => {
   if (state && state.employment) {
-    if (state.employment.hasJobInNZ) {
-      return 0;
-    }
-    if (state.employment.hasJobOfferInNZ) {
-      return 1;
-    }
+    return state.employment.hasJobInNZ;
   }
-  return -1;
+  return false;
+};
+
+export const getHasJobOfferInNZ = (state: ImmigrationState) => {
+  if (state && state.employment) {
+    return state.employment.hasJobOfferInNZ;
+  }
+  return false;
 };
 
 export const getHasEmpoymentExperienceInASS = (state: ImmigrationState) => {
@@ -141,7 +143,7 @@ export const getPartnerHasQualificationLevel = (state: ImmigrationState) => {
 const pointsForAge = (param: Identity | null): number => {
   if (param !== null) {
     const ages = moment().diff(param.dateOfBirth, 'year', false);
-    if (ages < 20 || ages > 55) {
+    if (ages < 20) {
       return 0;
     } else if (ages < 40) {
       return 30;
@@ -149,7 +151,7 @@ const pointsForAge = (param: Identity | null): number => {
       return 20;
     } else if (ages < 50) {
       return 10;
-    } else {
+    } else if (ages <= 55) {
       return 5;
     }
   }
@@ -208,11 +210,20 @@ const pointsForQualification = (param: Qualification | null): number => {
 
 const getWorkExperiencePoints = (workExperienceYears: number): number => {
   switch (workExperienceYears) {
-    case 0: // 2-5 years
+    case 0: // 2 - 4 years
       return 10;
 
-    case 1: // 6 years or more
-      return 15;
+    case 1: // 4 - 6 years
+      return 20;
+
+    case 2: // 6 - 8 years
+      return 30;
+
+    case 3: // 8 - 10 years
+      return 40;
+
+    case 4: // 10 years or more
+      return 50;
   }
   return 0;
 };
@@ -224,20 +235,11 @@ const getHasWorkExperienceInNZPoints = (hasWorkExperienceInNZ: boolean): number 
 const getWorkExperienceInAssPoitns = (hasWorkExperienceInASS: boolean, workExperienceYearsInASS: number): number => {
   if (hasWorkExperienceInASS) {
     switch (workExperienceYearsInASS) {
-      case 0: // 2 - 4 years
+      case 0: // 2-5 years
         return 10;
 
-      case 1: // 4 - 6 years
-        return 20;
-
-      case 2: // 6 - 8 years
-        return 30;
-
-      case 3: // 8 - 10 years
-        return 40;
-
-      case 4: // 10 years or more
-        return 40;
+      case 1: // 6 years or more
+        return 15;
     }
   }
   return 0;
@@ -255,7 +257,7 @@ const pointsForWorkExperience = (param: WorkExperience | null): number => {
 };
 
 const pointsForEmployment = (param: Employment | null): number => {
-  if (param && (param.hasJobInNZ || param.hasJobInNZ)) {
+  if (param && (param.hasJobInNZ || param.hasJobOfferInNZ)) {
     const hasJobOrJobOfferPoints = 50;
     const hourlyRatePoints = param.hourlyRate >= 51 ? 20 : 0;
     const hasWorkExperienceInAssPoints = param.hasWorkExperienceInASS ? 10 : 0;

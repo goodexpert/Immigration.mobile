@@ -16,10 +16,10 @@ export const immigrationReducer = (state = initialState, action: AnyAction) => {
   console.log('immigrationReducer', action.type, payload);
 
   switch (action.type) {
-    case ActionTypes.RESET:
+    case ActionTypes.CLEAR:
       return initialState;
 
-    case ActionTypes.CLEAR:
+    case ActionTypes.RESET:
       return { ...initialState, history };
 
     case ActionTypes.SAVE:

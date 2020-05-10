@@ -1,5 +1,4 @@
 import { ActionTypes } from './ActionTypes';
-import { Action } from 'redux';
 
 export enum WorkTypes {
   FullTime = 'Full time',
@@ -47,7 +46,7 @@ export interface Employment {
   hasWorkExperienceInASS: boolean;
   workOutsideAuckland: boolean;
   workType: number;
-  hourlyRate: number;
+  hourlyRate: string;
 }
 
 interface SetEmploymentAction {

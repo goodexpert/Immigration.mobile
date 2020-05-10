@@ -5,16 +5,21 @@ import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, Alert, App
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { IdentityProps } from './types';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
-import SkilledMigrantRequirements from '../global';
+import { asyncScheduler, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
+import { ADMOB_CONFIG, SkilledMigrantRequirements } from '../global';
 import { AppState } from '../store';
 import { Identity } from '../store/types';
 import { setIdentify } from '../store/Actions';
+import { handleAndroidBackButton, removeAndroidBackButtonHandler } from './AndroidBackButton';
 import { isFinal, getDateOfBirth } from './utils';
+import { IdentityProps } from './types';
 
 const moment = require('moment');
 
@@ -22,6 +27,7 @@ const IdentityScreen: React.FC<IdentityProps> = ({ route, navigation, appState, 
   const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
   const [dateOfBirth, setDateOfBirth] = React.useState<Date | null>(getDateOfBirth(appState));
   const colorScheme = Appearance.getColorScheme();
+  const subject = new Subject<string>();
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -30,7 +36,7 @@ const IdentityScreen: React.FC<IdentityProps> = ({ route, navigation, appState, 
   const handleConfirm = (date: Date) => {
     const ages = moment().diff(date, 'year', false);
     if (ages > SkilledMigrantRequirements.maximumAge) {
-      handleError('An applicant should not be great than 55');
+      handleError('An applicant should be 55 years or under.');
     } else {
       setDateOfBirth(date);
       hideDatePicker();
@@ -42,11 +48,12 @@ const IdentityScreen: React.FC<IdentityProps> = ({ route, navigation, appState, 
   };
 
   const onPrev = () => {
-    isFinal(appState) ? navigation.push('Result') : navigation.goBack();
+    navigation.goBack();
+    setIdentify({ dateOfBirth });
   };
 
   const onNext = () => {
-    navigation.push(isFinal(appState) ? 'Result' : 'Qualification');
+    isFinal(appState) ? navigation.goBack() : navigation.push('Qualification');
     setIdentify({ dateOfBirth });
   };
 
@@ -65,21 +72,36 @@ const IdentityScreen: React.FC<IdentityProps> = ({ route, navigation, appState, 
     });
   };
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <TouchableOpacity style={styles.navItem} onPress={onPrev}>
+        <TouchableOpacity style={styles.navItem} onPress={() => subject.next('onPrev')}>
           <FontAwesomeIcon icon={faChevronLeft} />
         </TouchableOpacity>
       ),
       headerRight: () => (
-        <TouchableOpacity style={styles.navItem} disabled={!canMoveNext()} onPress={onNext}>
-          <Text style={{ ...styles.navItemText, opacity: canMoveNext() ? 1 : 0.5 }}>
-            {isFinal(appState) ? 'Done' : 'Next'}
-          </Text>
+        <TouchableOpacity style={styles.navItem} onPress={() => subject.next('onNext')}>
+          <Text style={styles.navItemText}>{isFinal(appState) ? 'Done' : canMoveNext() ? 'Next' : 'Skip'}</Text>
         </TouchableOpacity>
       ),
     });
+
+    subject.pipe(debounceTime(300, asyncScheduler)).subscribe((v) => {
+      if (v === 'onNext') {
+        onNext();
+      } else {
+        onPrev();
+      }
+    });
+
+    handleAndroidBackButton(() => {
+      subject.next('onPrev');
+    });
+
+    return () => {
+      subject.unsubscribe();
+      removeAndroidBackButtonHandler();
+    };
   });
 
   return (
@@ -106,6 +128,15 @@ const IdentityScreen: React.FC<IdentityProps> = ({ route, navigation, appState, 
             />
           </View>
         </ScrollView>
+        <View style={styles.banner}>
+          <BannerAd
+            unitId={ADMOB_CONFIG.admob_banner_app_id}
+            size={BannerAdSize.SMART_BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
+        </View>
       </SafeAreaView>
     </>
   );
@@ -133,7 +164,13 @@ const styles = StyleSheet.create({
     marginRight: 28,
   },
   navItemText: {
+    color: '#5233FF',
+    fontFamily: 'Avenir-Medium',
+    fontSize: 14,
+  },
+  navItemTextDisabled: {
     color: 'rgb(0, 0, 0)',
+    opacity: 0.5,
     fontFamily: 'Avenir-Medium',
     fontSize: 14,
   },
@@ -168,6 +205,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir-Medium',
     fontSize: 16,
     letterSpacing: 0,
+  },
+  banner: {
+    alignSelf: 'center',
   },
 });
 
