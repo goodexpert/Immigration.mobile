@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="68px" height="68px" viewBox="0 0 68 68" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>smile icon</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Result-page_kr" transform="translate(-56.000000, -90.000000)" fill="#000000">
+            <g id="smile-icon" transform="translate(58.000000, 92.000000)">
+                <path d="M32,-1.5 C13.4984609,-1.5 -1.5,13.4984609 -1.5,32 C-1.5,50.5015391 13.4984609,65.5 32,65.5 C50.5015391,65.5 65.5,50.5015391 65.5,32 C65.5,13.4984609 50.5015391,-1.5 32,-1.5 Z M32,1.5 C48.8446849,1.5 62.5,15.1553151 62.5,32 C62.5,48.8446849 48.8446849,62.5 32,62.5 C15.1553151,62.5 1.5,48.8446849 1.5,32 C1.5,15.1553151 15.1553151,1.5 32,1.5 Z" id="Oval" fill-rule="nonzero"></path>
+                <path d="M44,35.5 C44.8284271,35.5 45.5,36.1715729 45.5,37 C45.5,42.8728665 39.8446146,47.5 33,47.5 C26.1553854,47.5 20.5,42.8728665 20.5,37 C20.5,36.1715729 21.1715729,35.5 22,35.5 C22.8284271,35.5 23.5,36.1715729 23.5,37 C23.5,41.068259 27.6943501,44.5 33,44.5 C38.3056499,44.5 42.5,41.068259 42.5,37 C42.5,36.1715729 43.1715729,35.5 44,35.5 Z" id="Path" fill-rule="nonzero"></path>
+                <circle id="Oval-Copy-7" transform="translate(46.000000, 26.000000) rotate(28.000000) translate(-46.000000, -26.000000) " cx="46" cy="26" r="2"></circle>
+                <circle id="Oval-Copy-8" transform="translate(19.000000, 26.000000) rotate(28.000000) translate(-19.000000, -26.000000) " cx="19" cy="26" r="2"></circle>
+            </g>
+        </g>
+    </g>
+</svg>

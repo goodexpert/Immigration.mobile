@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="68px" height="68px" viewBox="0 0 68 68" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 60.1 (88133) - https://sketch.com -->
+    <title>sadicon</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Result-page_en" transform="translate(-56.000000, -90.000000)" fill="#000000">
+            <g id="sadicon" transform="translate(56.000000, 90.000000)">
+                <path d="M34,0.5 C15.4984609,0.5 0.5,15.4984609 0.5,34 C0.5,52.5015391 15.4984609,67.5 34,67.5 C52.5015391,67.5 67.5,52.5015391 67.5,34 C67.5,15.4984609 52.5015391,0.5 34,0.5 Z M34,3.5 C50.8446849,3.5 64.5,17.1553151 64.5,34 C64.5,50.8446849 50.8446849,64.5 34,64.5 C17.1553151,64.5 3.5,50.8446849 3.5,34 C3.5,17.1553151 17.1553151,3.5 34,3.5 Z" id="Oval" fill-rule="nonzero"></path>
+                <path d="M46,37.5 C46.8284271,37.5 47.5,38.1715729 47.5,39 C47.5,44.8728665 41.8446146,49.5 35,49.5 C28.1553854,49.5 22.5,44.8728665 22.5,39 C22.5,38.1715729 23.1715729,37.5 24,37.5 C24.8284271,37.5 25.5,38.1715729 25.5,39 C25.5,43.068259 29.6943501,46.5 35,46.5 C40.3056499,46.5 44.5,43.068259 44.5,39 C44.5,38.1715729 45.1715729,37.5 46,37.5 Z" id="Path" fill-rule="nonzero" transform="translate(35.000000, 43.500000) rotate(-180.000000) translate(-35.000000, -43.500000) "></path>
+                <circle id="Oval-Copy-7" transform="translate(48.000000, 28.000000) rotate(28.000000) translate(-48.000000, -28.000000) " cx="48" cy="28" r="2"></circle>
+                <circle id="Oval-Copy-8" transform="translate(21.000000, 28.000000) rotate(28.000000) translate(-21.000000, -28.000000) " cx="21" cy="28" r="2"></circle>
+            </g>
+        </g>
+    </g>
+</svg>
