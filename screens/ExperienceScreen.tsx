@@ -1,10 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar } from 'react-native';
+import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, TouchableOpacity } from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft, faInfo } from '@fortawesome/free-solid-svg-icons';
 import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
@@ -14,11 +13,17 @@ import { debounceTime } from 'rxjs/operators';
 
 import { ADMOB_CONFIG } from '../global';
 import { ExperienceProps } from './types';
-import { CheckBox, ComboBox, ExperienceModal, SkillsShortageModal } from '../components';
+import {
+  CheckBox,
+  ComboBox,
+  ExperienceModal,
+  SkillsShortageModal,
+  handleAndroidBackButton,
+  removeAndroidBackButtonHandler,
+} from '../components';
 import { AppState } from '../store';
 import { WorkExperience } from '../store/types';
 import { setWorkExperience } from '../store/Actions';
-import { handleAndroidBackButton, removeAndroidBackButtonHandler } from './AndroidBackButton';
 import {
   isFinal,
   getWorkExperienceYears,
@@ -40,7 +45,9 @@ const ExperienceScreen: React.FC<ExperienceProps> = ({ route, navigation, appSta
   const subject = new Subject<string>();
 
   const onPrev = () => {
-    navigation.goBack();
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
     setWorkExperience({
       workExperienceYears,
       hasWorkExperienceInNZ,

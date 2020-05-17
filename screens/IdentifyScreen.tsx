@@ -1,11 +1,20 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, Alert, Appearance } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  StatusBar,
+  Alert,
+  Appearance,
+  TouchableOpacity,
+} from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
@@ -14,10 +23,10 @@ import { asyncScheduler, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 import { ADMOB_CONFIG, SkilledMigrantRequirements } from '../global';
+import { handleAndroidBackButton, removeAndroidBackButtonHandler } from '../components';
 import { AppState } from '../store';
 import { Identity } from '../store/types';
 import { setIdentify } from '../store/Actions';
-import { handleAndroidBackButton, removeAndroidBackButtonHandler } from './AndroidBackButton';
 import { isFinal, getDateOfBirth } from './utils';
 import { IdentityProps } from './types';
 
@@ -48,7 +57,9 @@ const IdentityScreen: React.FC<IdentityProps> = ({ route, navigation, appState, 
   };
 
   const onPrev = () => {
-    navigation.goBack();
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
     setIdentify({ dateOfBirth });
   };
 

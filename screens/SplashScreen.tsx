@@ -9,10 +9,9 @@
  */
 
 import React from 'react';
-import { SafeAreaView, StyleSheet, View, Text, StatusBar } from 'react-native';
+import { SafeAreaView, StyleSheet, View, Text, StatusBar, TouchableOpacity, BackHandler } from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import admob, { MaxAdContentRating, TestIds } from '@react-native-firebase/admob';
 import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
 
@@ -21,55 +20,66 @@ import { debounceTime } from 'rxjs/operators';
 
 import { ADMOB_CONFIG } from '../global';
 import { SplashProps } from './types';
+import { handleAndroidBackButton, removeAndroidBackButtonHandler } from '../components';
 
 const SplashScreen: React.FC<SplashProps> = ({ route, navigation }) => {
-  // const [isInitialized, setIsInialized] = React.useState(false);
-  // const [isLoading, setIsLoading] = React.useState(false);
+  const [isInitialized, setIsInialized] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
   const subject = new Subject<string>();
 
   const onNext = () => {
     navigation.push('Identity');
   };
 
+  const requestAd = () => {
+    if (isLoading || isInitialized) {
+      return;
+    }
+    setIsLoading(true);
+
+    admob()
+      .setRequestConfiguration({
+        // Update all future requests suitable for parental guidance
+        maxAdContentRating: MaxAdContentRating.PG,
+        // Indicates that you want your content treated as child-directed for purposes of COPPA.
+        tagForChildDirectedTreatment: true,
+        // Indicates that you want the ad request to be handled in a
+        // manner suitable for users under the age of consent.
+        tagForUnderAgeOfConsent: true,
+      })
+      .then(() => {
+        // Request config successfully set!
+        console.info('Request config successfully');
+        setIsInialized(true);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error', error);
+        setIsLoading(false);
+      });
+
+    console.log('TestIds.BANNER', TestIds.BANNER);
+    console.log('admob_banner_app_id', ADMOB_CONFIG.admob_banner_app_id);
+  };
+
   React.useEffect(() => {
+    requestAd();
+
     subject.pipe(debounceTime(300, asyncScheduler)).subscribe((v) => {
       if (v === 'onNext') {
         onNext();
       }
     });
 
+    handleAndroidBackButton(() => {
+      BackHandler.exitApp();
+    });
+
     return () => {
       subject.unsubscribe();
+      removeAndroidBackButtonHandler();
     };
   });
-
-  // React.useEffect(() => {
-  //   if (!isLoading && !isInitialized) {
-  //     setIsLoading(true);
-  //     admob()
-  //       .setRequestConfiguration({
-  //         // Update all future requests suitable for parental guidance
-  //         maxAdContentRating: MaxAdContentRating.PG,
-  //         // Indicates that you want your content treated as child-directed for purposes of COPPA.
-  //         tagForChildDirectedTreatment: true,
-  //         // Indicates that you want the ad request to be handled in a
-  //         // manner suitable for users under the age of consent.
-  //         tagForUnderAgeOfConsent: true,
-  //       })
-  //       .then(() => {
-  //         // Request config successfully set!
-  //         console.info('Request config successfully');
-  //         setIsInialized(true);
-  //         setIsLoading(false);
-  //       })
-  //       .catch((error) => {
-  //         console.error(error);
-  //         setIsLoading(false);
-  //       });
-  //   }
-  //   console.log('TestIds.BANNER', TestIds.BANNER);
-  //   console.log('admob_banner_app_id', ADMOB_CONFIG.admob_banner_app_id);
-  // }, [isLoading, isInitialized]);
 
   return (
     <>

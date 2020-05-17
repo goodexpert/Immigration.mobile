@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet, Modal, ModalProps, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { StyleSheet, Modal, ModalProps, Text, View, Linking, TouchableOpacity } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
@@ -9,9 +8,15 @@ export interface ExperienceMoalProps extends ModalProps {
 }
 
 const ExperienceModal: React.FC<ExperienceMoalProps> = (props) => {
+  const URL =
+    'https://www.immigration.govt.nz/new-zealand-visas/apply-for-a-visa/tools-and-information/work-and-employment/full-occupation-list';
+  const onPress = () => {
+    Linking.openURL(URL).catch((err) => console.error('An error occurred', err));
+  };
+
   return (
     <>
-      <Modal {...props} presentationStyle='overFullScreen'>
+      <Modal {...props} presentationStyle='overFullScreen' transparent={true}>
         <View style={styles.modalView}>
           <View style={styles.content}>
             <View style={styles.header}>
@@ -25,7 +30,7 @@ const ExperienceModal: React.FC<ExperienceMoalProps> = (props) => {
               claiming points for.
             </Text>
           </View>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={onPress}>
             <Text style={styles.buttonText}>Search my occupation</Text>
           </TouchableOpacity>
         </View>

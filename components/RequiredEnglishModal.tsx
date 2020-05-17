@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet, Modal, ModalProps, ScrollView, Text, View, Image } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { StyleSheet, Modal, ModalProps, ScrollView, Text, View, TouchableOpacity } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
@@ -11,7 +10,7 @@ export interface RequiredEnglishModalProps extends ModalProps {
 const RequiredEnglishModal: React.FC<RequiredEnglishModalProps> = (props) => {
   return (
     <>
-      <Modal {...props} presentationStyle='overFullScreen'>
+      <Modal {...props} presentationStyle='overFullScreen' transparent={true}>
         <View style={styles.modalView}>
           <ScrollView style={styles.content}>
             <View style={styles.header}>

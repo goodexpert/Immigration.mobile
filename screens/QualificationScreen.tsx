@@ -1,10 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, Button } from 'react-native';
+import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, TouchableOpacity } from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft, faInfo } from '@fortawesome/free-solid-svg-icons';
 import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
@@ -14,11 +13,16 @@ import { debounceTime } from 'rxjs/operators';
 
 import { ADMOB_CONFIG } from '../global';
 import { QualificationProps } from './types';
-import { CheckBox, ComboBox, QualificationModal } from '../components';
+import {
+  CheckBox,
+  ComboBox,
+  QualificationModal,
+  handleAndroidBackButton,
+  removeAndroidBackButtonHandler,
+} from '../components';
 import { AppState } from '../store';
 import { setQualification } from '../store/Actions';
 import { Qualification } from '../store/types';
-import { handleAndroidBackButton, removeAndroidBackButtonHandler } from './AndroidBackButton';
 import {
   isFinal,
   getQualificationLevel,
@@ -45,7 +49,9 @@ const QualificationScreen: React.FC<QualificationProps> = ({ route, navigation, 
   const subject = new Subject<string>();
 
   const onPrev = () => {
-    navigation.goBack();
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
     setQualification({ qualificationLevel, hasQualificationInNZ, startedBefore25July2011, recognisedLevel });
   };
 

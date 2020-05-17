@@ -11,10 +11,10 @@ import {
   StatusBar,
   Share,
   ShareContent,
+  TouchableOpacity,
 } from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
@@ -22,6 +22,7 @@ import { asyncScheduler, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 import { ResultItem, ResultProps, ScreenName } from './types';
+import { handleAndroidBackButton, removeAndroidBackButtonHandler } from '../components';
 import { makeResults, makeTotalPoints } from './utils';
 
 import SadIcon from '../assets/img/sad-icon.svg';
@@ -108,8 +109,13 @@ const ResultScreen: React.FC<ResultProps> = ({ route, navigation, appState, rese
       }
     });
 
+    handleAndroidBackButton(() => {
+      subject.next('onReset');
+    });
+
     return () => {
       subject.unsubscribe();
+      removeAndroidBackButtonHandler();
     };
   });
 

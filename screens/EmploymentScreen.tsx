@@ -14,11 +14,16 @@ import { debounceTime } from 'rxjs/operators';
 
 import { ADMOB_CONFIG } from '../global';
 import { EmploymentProps } from './types';
-import { CheckBox, ComboBox, SkillsShortageModal } from '../components';
+import {
+  CheckBox,
+  ComboBox,
+  SkillsShortageModal,
+  handleAndroidBackButton,
+  removeAndroidBackButtonHandler,
+} from '../components';
 import { AppState } from '../store';
 import { setEmployment } from '../store/Actions';
 import { Employment } from '../store/types';
-import { handleAndroidBackButton, removeAndroidBackButtonHandler } from './AndroidBackButton';
 import {
   isFinal,
   getHasJobInNZ,
@@ -57,7 +62,9 @@ const EmploymentScreen: React.FC<EmploymentProps> = ({ route, navigation, appSta
 
   const onPrev = () => {
     saveState();
-    navigation.goBack();
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
   };
 
   const onNext = () => {

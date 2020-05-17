@@ -1,10 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, ActivityIndicator } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  StatusBar,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { BannerAd, BannerAdSize, AdEventType, RewardedAd, RewardedAdEventType } from '@react-native-firebase/admob';
@@ -14,11 +22,18 @@ import { debounceTime } from 'rxjs/operators';
 
 import { ADMOB_CONFIG } from '../global';
 import { PartnerProps } from './types';
-import { CheckBox, ComboBox, QualificationModal, RequiredEnglishModal, SkillsShortageModal } from '../components';
+import {
+  CheckBox,
+  ComboBox,
+  QualificationModal,
+  RequiredEnglishModal,
+  SkillsShortageModal,
+  handleAndroidBackButton,
+  removeAndroidBackButtonHandler,
+} from '../components';
 import { AppState } from '../store';
 import { Partner } from '../store/types';
 import { setPartner, setFinal } from '../store/Actions';
-import { handleAndroidBackButton, removeAndroidBackButtonHandler } from './AndroidBackButton';
 import {
   isFinal,
   getPartnerHasRequiredLevel,
@@ -45,7 +60,9 @@ const PartnerScreen: React.FC<PartnerProps> = ({ route, navigation, appState, se
   const subject = new Subject<string>();
 
   const onPrev = () => {
-    navigation.goBack();
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
     setPartner({ hasRequiredLevel, hasSkilledJobInNZ, hasQualification, qualificationLevel });
   };
 
@@ -85,6 +102,7 @@ const PartnerScreen: React.FC<PartnerProps> = ({ route, navigation, appState, se
         break;
 
       case AdEventType.ERROR:
+        console.info('Error', error);
         navigation.push('Result');
         setFinal(true);
         setIsLoading(false);
@@ -107,6 +125,7 @@ const PartnerScreen: React.FC<PartnerProps> = ({ route, navigation, appState, se
     });
 
     subject.pipe(debounceTime(300, asyncScheduler)).subscribe((v) => {
+      console.log('event', v);
       if (v === 'openRequiredEnglishInfo') {
         setIsOpenRequiredEnglishInfo(true);
       } else if (v === 'openQualificationInfo') {

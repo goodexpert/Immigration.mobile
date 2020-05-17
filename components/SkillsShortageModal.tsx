@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet, Modal, ModalProps, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { StyleSheet, Modal, ModalProps, Text, View, TouchableOpacity } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
@@ -11,7 +10,7 @@ export interface SkillsShortageModalProps extends ModalProps {
 const SkillsShortageModal: React.FC<SkillsShortageModalProps> = (props) => {
   return (
     <>
-      <Modal {...props} presentationStyle='overFullScreen'>
+      <Modal {...props} presentationStyle='overFullScreen' transparent={true}>
         <View style={styles.modalView}>
           <View style={styles.content}>
             <View style={styles.header}>

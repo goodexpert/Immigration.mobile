@@ -5,3 +5,4 @@ export { default as ExperienceModal } from './ExperienceModal';
 export { default as QualificationModal } from './QualificationModal';
 export { default as RequiredEnglishModal } from './RequiredEnglishModal';
 export { default as SkillsShortageModal } from './SkillsShortageModal';
+export { handleAndroidBackButton, removeAndroidBackButtonHandler } from './AndroidBackButton';

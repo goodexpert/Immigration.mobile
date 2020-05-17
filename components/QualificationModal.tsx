@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Modal, ModalProps, Text, View, ListRenderItemInfo } from 'react-native';
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import { StyleSheet, Modal, ModalProps, Text, View, ListRenderItemInfo, Linking, TouchableOpacity } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
@@ -12,8 +12,8 @@ interface QualificationLevelItem {
 const items: Array<QualificationLevelItem> = [
   { name: 'Certificates', levelRange: 'Level 1 - 4' },
   { name: 'Diplomas', levelRange: 'Level 5 - 6' },
-  { name: 'Diplomas,\n Bachelor’s Degree,\n Graduate Diplomas\n and Certificates', levelRange: 'Level 7' },
-  { name: 'Postgraduate Diplomas\n and Certificates,\n Bachelor Honours Degree', levelRange: 'Level 8' },
+  { name: 'Diplomas,\nBachelor’s Degree,\nGraduate Diplomas\nand Certificates', levelRange: 'Level 7' },
+  { name: 'Postgraduate Diplomas\nand Certificates,\nBachelor Honours Degree', levelRange: 'Level 8' },
   { name: 'Master’s Degree', levelRange: 'Level 9' },
   { name: 'Doctoral Degree', levelRange: 'Level 10' },
 ];
@@ -25,9 +25,14 @@ export interface QualificationModalProps extends ModalProps {
 }
 
 const QualificationModal: React.FC<QualificationModalProps> = (props) => {
+  const URL = 'https://www.immigration.govt.nz/opsmanual/#35171.htm';
+  const onPress = () => {
+    Linking.openURL(URL).catch((err) => console.error('An error occurred', err));
+  };
+
   return (
     <>
-      <Modal {...props} presentationStyle='overFullScreen'>
+      <Modal {...props} presentationStyle='overFullScreen' transparent={true}>
         <View style={styles.modalView}>
           <View style={styles.content}>
             <View style={styles.header}>
@@ -50,7 +55,7 @@ const QualificationModal: React.FC<QualificationModalProps> = (props) => {
               contentContainerStyle={styles.listView}
             />
           </View>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={onPress}>
             <Text style={styles.buttonText}>Check the Qualifications list</Text>
           </TouchableOpacity>
         </View>
