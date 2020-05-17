@@ -57,9 +57,6 @@ const SplashScreen: React.FC<SplashProps> = ({ route, navigation }) => {
         console.error('Error', error);
         setIsLoading(false);
       });
-
-    console.log('TestIds.BANNER', TestIds.BANNER);
-    console.log('admob_banner_app_id', ADMOB_CONFIG.admob_banner_app_id);
   };
 
   React.useEffect(() => {

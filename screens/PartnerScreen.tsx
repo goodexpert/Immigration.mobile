@@ -15,7 +15,7 @@ import {
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import { BannerAd, BannerAdSize, AdEventType, RewardedAd, RewardedAdEventType } from '@react-native-firebase/admob';
+import { AdEventType, BannerAd, BannerAdSize, InterstitialAd } from '@react-native-firebase/admob';
 
 import { asyncScheduler, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -41,15 +41,17 @@ import {
   getPartnerHasQualification,
   getPartnerHasQualificationLevel,
 } from './utils';
+import { initialState } from 'store/constants';
 
 const qualifications = ['Level 3-6', 'Level 7-8', 'Level 9-10'];
 
-const rewardedAd = RewardedAd.createForAdRequest(ADMOB_CONFIG.admob_reward_app_id, {
-  requestNonPersonalizedAdsOnly: false,
+const interstitial = InterstitialAd.createForAdRequest(ADMOB_CONFIG.admob_interstitial_app_id, {
+  requestNonPersonalizedAdsOnly: true,
 });
 
 const PartnerScreen: React.FC<PartnerProps> = ({ route, navigation, appState, setPartner, setFinal }) => {
   const [isLoading, setIsLoading] = React.useState(false);
+  const [isInitialized, setIsInialized] = React.useState(false);
   const [isOpenRequiredEnglishInfo, setIsOpenRequiredEnglishInfo] = React.useState(false);
   const [isOpenQualifactionInfo, setIsOpenQualifactionInfo] = React.useState(false);
   const [isOpenAssInfo, setIsOpenAssInfo] = React.useState(false);
@@ -72,9 +74,8 @@ const PartnerScreen: React.FC<PartnerProps> = ({ route, navigation, appState, se
       navigation.goBack();
     } else {
       setIsLoading(true);
-      rewardedAd.load();
+      interstitial.load();
     }
-    console.log('onNext', { hasRequiredLevel, hasSkilledJobInNZ, hasQualification, qualificationLevel });
   };
 
   const canMoveNext = () => {
@@ -85,14 +86,10 @@ const PartnerScreen: React.FC<PartnerProps> = ({ route, navigation, appState, se
     setQualificationLevel(index);
   };
 
-  const eventListener = rewardedAd.onAdEvent((type, error, reward) => {
+  const eventListener = interstitial.onAdEvent((type, error, data) => {
     switch (type) {
-      case RewardedAdEventType.LOADED:
-        rewardedAd.show();
-        break;
-
-      case RewardedAdEventType.EARNED_REWARD:
-        console.info('User earned reward of ', reward);
+      case AdEventType.LOADED:
+        interstitial.show();
         break;
 
       case AdEventType.CLOSED:

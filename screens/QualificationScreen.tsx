@@ -123,12 +123,12 @@ const QualificationScreen: React.FC<QualificationProps> = ({ route, navigation, 
       <SafeAreaView style={styles.content}>
         <ScrollView contentInsetAdjustmentBehavior='automatic' style={styles.scrollView}>
           <View style={styles.container}>
-            <View style={styles.titleContainer}>
+            <TouchableOpacity style={styles.titleContainer} onPress={() => subject.next('openInfo')}>
               <Text style={styles.titleText}>Qualification</Text>
-              <TouchableOpacity style={styles.titleIconCircle} onPress={() => subject.next('openInfo')}>
+              <View style={styles.titleIconCircle}>
                 <FontAwesomeIcon icon={faInfo} size={8} style={styles.titleIcon} />
-              </TouchableOpacity>
-            </View>
+              </View>
+            </TouchableOpacity>
             <ComboBox
               data={qualifications}
               placeholder={'Select your qualification'}
