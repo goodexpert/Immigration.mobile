@@ -37,7 +37,7 @@ const QualificationModal: React.FC<QualificationModalProps> = (props) => {
           <View style={styles.content}>
             <View style={styles.header}>
               <Text style={styles.titleText}>Qualification</Text>
-              <TouchableOpacity onPress={props.onClose}>
+              <TouchableOpacity style={styles.closeButton} onPress={props.onClose}>
                 <FontAwesomeIcon icon={faTimes} color='white' />
               </TouchableOpacity>
             </View>
@@ -75,6 +75,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     paddingLeft: 30,
     paddingRight: 30,
+  },
+  closeButton: {
+    color: 'rgb(0, 0, 0)',
+    padding: 20,
   },
   header: {
     flexDirection: 'row',

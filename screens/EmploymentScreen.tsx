@@ -232,8 +232,10 @@ const styles = StyleSheet.create({
   },
   navItem: {
     color: 'rgb(0, 0, 0)',
-    marginLeft: 30,
-    marginRight: 28,
+    paddingLeft: 30,
+    paddingRight: 30,
+    paddingTop: 8,
+    paddingBottom: 8,
   },
   navItemText: {
     color: '#5233FF',

@@ -13,7 +13,6 @@ import { initialState } from './constants';
 export const immigrationReducer = (state = initialState, action: AnyAction) => {
   const { payload } = action;
   const { history } = state;
-  console.log('immigrationReducer', action.type, payload);
 
   switch (action.type) {
     case ActionTypes.CLEAR:
