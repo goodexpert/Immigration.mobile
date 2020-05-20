@@ -13,27 +13,26 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="middleTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="iby-vP-Jqq">
-                    <rect key="frame" x="31" y="326" width="338" height="160"/>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="1fI-Co-fzh">
+                    <rect key="frame" x="87" y="328" width="240" height="240"/>
                     <constraints>
-                        <constraint firstAttribute="width" secondItem="iby-vP-Jqq" secondAttribute="height" multiplier="169:80" id="s43-gq-4vu"/>
+                        <constraint firstAttribute="width" constant="240" id="Gkz-KY-dsr"/>
+                        <constraint firstAttribute="height" constant="240" id="e6j-yl-jW7"/>
                     </constraints>
-                    <string key="text">New Zealand
-Skilled Migrant Points Calculator</string>
-                    <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="36"/>
-                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
+                </imageView>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="iby-vP-Jqq" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="31" id="DX3-p1-cqu"/>
-                <constraint firstItem="iby-vP-Jqq" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="326" id="TlW-B5-vur"/>
-                <constraint firstAttribute="trailing" secondItem="iby-vP-Jqq" secondAttribute="trailing" constant="45" id="ZrJ-dv-MGF"/>
-                <constraint firstAttribute="bottom" secondItem="iby-vP-Jqq" secondAttribute="bottom" constant="410" id="l7X-2V-wJh"/>
+                <constraint firstItem="1fI-Co-fzh" firstAttribute="centerX" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="centerX" id="BT6-DL-XjO"/>
+                <constraint firstItem="1fI-Co-fzh" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Ic0-hh-CeJ"/>
+                <constraint firstItem="1fI-Co-fzh" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="lPA-N0-P2c"/>
+                <constraint firstItem="1fI-Co-fzh" firstAttribute="centerY" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="centerY" id="n34-3E-Jsc"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <point key="canvasLocation" x="547.82608695652175" y="454.6875"/>
         </view>
     </objects>
+    <resources>
+        <image name="Logo" width="1024" height="1024"/>
+    </resources>
 </document>
