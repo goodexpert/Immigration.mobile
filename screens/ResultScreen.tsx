@@ -41,7 +41,6 @@ const ResultScreen: React.FC<ResultProps> = ({ route, navigation, appState, rese
     },
     ios: {
       title: 'New Zealand Skilled Migrant Points Calculator',
-      url: 'https://youtube.com',
     },
     default: {
       message: `My New Zealand immigration points is ${totalPoints}`,
