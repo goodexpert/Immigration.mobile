@@ -2,6 +2,9 @@
 #
 .DS_Store
 
+# Claude Code
+.claude/
+
 # Xcode
 #
 build/
@@ -28,6 +31,8 @@ build/
 .gradle
 local.properties
 *.iml
+android/app/.cxx/
+android/app/.settings/
 
 # Visual Studio Code
 #
@@ -61,3 +66,6 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+
+# Xcode local env (machine-specific Node path override)
+ios/.xcode.env.local

@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
+  Alert,
   Platform,
   SafeAreaView,
   StyleSheet,
@@ -14,9 +15,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { MyColors as Colors } from '../constants/color';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPencil } from '@fortawesome/free-solid-svg-icons';
 
 import { asyncScheduler, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -28,24 +29,17 @@ import { makeResults, makeTotalPoints } from './utils';
 import SadIcon from '../assets/img/sad-icon.svg';
 import SmileIcon from '../assets/img/smile-icon.svg';
 import { AppState } from '../store';
-import { reset } from '../store/Actions';
+import { reset as resetAction } from '../store/Actions';
 
-const ResultScreen: React.FC<ResultProps> = ({ route, navigation, appState, reset }) => {
+const ResultScreen: React.FC<ResultProps> = ({ navigation, appState, reset }) => {
   const [results, setResults] = React.useState<Array<ResultItem>>(makeResults(appState));
   const [totalPoints, setTotalPoints] = React.useState(makeTotalPoints(makeResults(appState)));
   const subject = new Subject<string>();
 
-  const shareContent = Platform.select({
-    android: {
-      title: 'New Zealand Skilled Migrant Points Calculator',
-    },
-    ios: {
-      title: 'New Zealand Skilled Migrant Points Calculator',
-    },
-    default: {
-      message: `My New Zealand immigration points is ${totalPoints}`,
-    },
-  }) as ShareContent;
+  const shareContent: ShareContent = {
+    title: 'New Zealand Skilled Migrant Points Calculator',
+    message: `My New Zealand immigration points is ${totalPoints}`,
+  };
 
   const onReset = () => {
     reset();
@@ -58,7 +52,7 @@ const ResultScreen: React.FC<ResultProps> = ({ route, navigation, appState, rese
       if (result.action === Share.sharedAction) {
       }
     } catch (error) {
-      alert(error.message);
+      Alert.alert('Error', error instanceof Error ? error.message : String(error));
     }
   };
 
@@ -72,7 +66,7 @@ const ResultScreen: React.FC<ResultProps> = ({ route, navigation, appState, rese
         <Text style={styles.resultItemTitleText}>{item.title}</Text>
         <Text style={styles.resultItemPointsText}>{item.value}pt</Text>
         <View style={styles.resultItemIconCircle}>
-          <FontAwesomeIcon icon={faPencilAlt} size={13} style={styles.resultItemIcon} />
+          <FontAwesomeIcon icon={faPencil} size={13} style={styles.resultItemIcon} />
         </View>
       </TouchableOpacity>
     );
@@ -266,8 +260,8 @@ const mapStateToProps = (state: AppState) => ({
   appState: state.current,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  reset: () => dispatch(reset()),
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+  reset: () => dispatch(resetAction()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ResultScreen);

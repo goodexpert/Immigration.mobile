@@ -1,13 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { SafeAreaView, StyleSheet, ScrollView, View, Text, TextInput, StatusBar, Appearance } from 'react-native';
+import { SafeAreaView, StyleSheet, ScrollView, View, Text, TextInput, StatusBar } from 'react-native';
 
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { MyColors as Colors } from '../constants/color';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
+import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 
 import { asyncScheduler, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -22,7 +22,7 @@ import {
   removeAndroidBackButtonHandler,
 } from '../components';
 import { AppState } from '../store';
-import { setEmployment } from '../store/Actions';
+import { setEmployment as setEmploymentAction } from '../store/Actions';
 import { Employment } from '../store/types';
 import {
   isFinal,
@@ -39,7 +39,7 @@ import WorkingIcon from '../assets/img/working-icon.svg';
 
 const workTypes = ['Full time', 'Part time', 'Contract', 'Casual'];
 
-const EmploymentScreen: React.FC<EmploymentProps> = ({ route, navigation, appState, setEmployment }) => {
+const EmploymentScreen: React.FC<EmploymentProps> = ({ navigation, appState, setEmployment }) => {
   const [isOpenAssInfo, setIsOpenAssInfo] = React.useState(false);
   const [hasJobInNZ, setHasJobInNZ] = React.useState(getHasJobInNZ(appState));
   const [hasJobOfferInNZ, setHasJobOfferInNZ] = React.useState(getHasJobOfferInNZ(appState));
@@ -156,7 +156,7 @@ const EmploymentScreen: React.FC<EmploymentProps> = ({ route, navigation, appSta
                 <Text style={styles.labelText}>Working</Text>
                 <Text style={styles.descriptionText}>{'I’m currently\nworking in NZ'}</Text>
               </View>
-              <View style={{ width: 10 }} />
+              <View style={styles.spacer} />
               <View style={styles.column}>
                 <TouchableOpacity
                   style={hasJobOfferInNZ ? styles.buttonSelected : styles.button}
@@ -208,7 +208,7 @@ const EmploymentScreen: React.FC<EmploymentProps> = ({ route, navigation, appSta
         <View style={styles.banner}>
           <BannerAd
             unitId={ADMOB_CONFIG.admob_banner_app_id}
-            size={BannerAdSize.SMART_BANNER}
+            size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
             requestOptions={{
               requestNonPersonalizedAdsOnly: true,
             }}
@@ -291,6 +291,9 @@ const styles = StyleSheet.create({
   column: {
     flex: 1,
   },
+  spacer: {
+    width: 10,
+  },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -356,8 +359,8 @@ const mapStateToProps = (state: AppState) => ({
   appState: state.current,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  setEmployment: (payload: Employment) => dispatch(setEmployment(payload)),
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+  setEmployment: (payload: Employment) => dispatch(setEmploymentAction(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EmploymentScreen);

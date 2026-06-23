@@ -6,5 +6,6 @@ module.exports = {
   rules: {
     '@typescript-eslint/no-unused-vars': 'warn',
     'jsx-quotes': ['error', 'prefer-single'],
+    'react/no-unstable-nested-components': ['warn', { allowAsProps: true }],
   },
 };

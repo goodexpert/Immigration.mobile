@@ -259,7 +259,7 @@ const pointsForWorkExperience = (param: WorkExperience | null): number => {
 const pointsForEmployment = (param: Employment | null): number => {
   if (param && (param.hasJobInNZ || param.hasJobOfferInNZ)) {
     const hasJobOrJobOfferPoints = 50;
-    const hourlyRatePoints = param.hourlyRate >= 51 ? 20 : 0;
+    const hourlyRatePoints = parseFloat(param.hourlyRate) >= 51 ? 20 : 0;
     const hasWorkExperienceInAssPoints = param.hasWorkExperienceInASS ? 10 : 0;
     const workOutsideAucklandPoints = param.workOutsideAuckland ? 30 : 0;
     return hasJobOrJobOfferPoints + hourlyRatePoints + hasWorkExperienceInAssPoints + workOutsideAucklandPoints;

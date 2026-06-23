@@ -3,28 +3,26 @@
  */
 
 import React from 'react';
-import { AppRegistry } from 'react-native';
+import { AppRegistry, StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import App from './App';
 import { name as appName } from './app.json';
 
 import { Provider } from 'react-redux';
 import { createAppStore } from './store';
 
-// class Index extends React.Component {
-//   render() {
-//     return (
-//       <Provider store={createAppStore()}>
-//         <App />
-//       </Provider>
-//     );
-//   }
-// }
 const Index = () => {
   return (
-    <Provider store={createAppStore()}>
-      <App />
-    </Provider>
+    <GestureHandlerRootView style={styles.root}>
+      <Provider store={createAppStore()}>
+        <App />
+      </Provider>
+    </GestureHandlerRootView>
   );
 };
+
+const styles = StyleSheet.create({
+  root: { flex: 1 },
+});
 
 AppRegistry.registerComponent(appName, () => Index);

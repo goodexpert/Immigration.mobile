@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Modal, ModalProps, Text, View, TouchableOpacity } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 export interface SkillsShortageModalProps extends ModalProps {
   onClose: () => void;
@@ -16,7 +16,7 @@ const SkillsShortageModal: React.FC<SkillsShortageModalProps> = (props) => {
             <View style={styles.header}>
               <Text style={styles.titleText}>Absolute skills shortage</Text>
               <TouchableOpacity style={styles.closeButton} onPress={props.onClose}>
-                <FontAwesomeIcon icon={faTimes} color='white' />
+                <FontAwesomeIcon icon={faXmark} color='white' />
               </TouchableOpacity>
             </View>
             <Text style={styles.labelText}>

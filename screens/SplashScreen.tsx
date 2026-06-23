@@ -11,9 +11,8 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, View, Text, StatusBar, TouchableOpacity, BackHandler } from 'react-native';
 
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import admob, { MaxAdContentRating, TestIds } from '@react-native-firebase/admob';
-import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
+import { MyColors as Colors } from '../constants/color';
+import mobileAds, { MaxAdContentRating, BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 
 import { asyncScheduler, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -22,7 +21,7 @@ import { ADMOB_CONFIG } from '../global';
 import { SplashProps } from './types';
 import { handleAndroidBackButton, removeAndroidBackButtonHandler } from '../components';
 
-const SplashScreen: React.FC<SplashProps> = ({ route, navigation }) => {
+const SplashScreen: React.FC<SplashProps> = ({ navigation }) => {
   const [isInitialized, setIsInialized] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const subject = new Subject<string>();
@@ -37,7 +36,7 @@ const SplashScreen: React.FC<SplashProps> = ({ route, navigation }) => {
     }
     setIsLoading(true);
 
-    admob()
+    mobileAds()
       .setRequestConfiguration({
         // Update all future requests suitable for parental guidance
         maxAdContentRating: MaxAdContentRating.PG,
@@ -86,7 +85,7 @@ const SplashScreen: React.FC<SplashProps> = ({ route, navigation }) => {
           <View style={styles.banner}>
             <BannerAd
               unitId={ADMOB_CONFIG.admob_banner_app_id}
-              size={BannerAdSize.SMART_BANNER}
+              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
               requestOptions={{
                 requestNonPersonalizedAdsOnly: true,
               }}

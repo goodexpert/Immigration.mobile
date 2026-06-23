@@ -14,10 +14,10 @@ import {
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { MyColors as Colors } from '../constants/color';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
+import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 
 import { asyncScheduler, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -26,13 +26,13 @@ import { ADMOB_CONFIG, SkilledMigrantRequirements } from '../global';
 import { handleAndroidBackButton, removeAndroidBackButtonHandler } from '../components';
 import { AppState } from '../store';
 import { Identity } from '../store/types';
-import { setIdentify } from '../store/Actions';
+import { setIdentify as setIdentifyAction } from '../store/Actions';
 import { isFinal, getDateOfBirth } from './utils';
 import { IdentityProps } from './types';
 
 const moment = require('moment');
 
-const IdentityScreen: React.FC<IdentityProps> = ({ route, navigation, appState, setIdentify }) => {
+const IdentityScreen: React.FC<IdentityProps> = ({ navigation, appState, setIdentify }) => {
   const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
   const [dateOfBirth, setDateOfBirth] = React.useState<Date | null>(getDateOfBirth(appState));
   const colorScheme = Appearance.getColorScheme();
@@ -78,7 +78,7 @@ const IdentityScreen: React.FC<IdentityProps> = ({ route, navigation, appState, 
   };
 
   const handleError = (message: string, title: string = 'Alert') => {
-    Alert.alert(title, message, [{ text: 'OK', onPress: () => console.log('OK Pressed') }, ,], {
+    Alert.alert(title, message, [{ text: 'OK', onPress: () => console.log('OK Pressed') }], {
       cancelable: false,
     });
   };
@@ -142,7 +142,7 @@ const IdentityScreen: React.FC<IdentityProps> = ({ route, navigation, appState, 
         <View style={styles.banner}>
           <BannerAd
             unitId={ADMOB_CONFIG.admob_banner_app_id}
-            size={BannerAdSize.SMART_BANNER}
+            size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
             requestOptions={{
               requestNonPersonalizedAdsOnly: true,
             }}
@@ -228,8 +228,8 @@ const mapStateToProps = (state: AppState) => ({
   appState: state.current,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  setIdentify: (payload: Identity) => dispatch(setIdentify(payload)),
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+  setIdentify: (payload: Identity) => dispatch(setIdentifyAction(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(IdentityScreen);

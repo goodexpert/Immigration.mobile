@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Modal, ModalProps, ScrollView, Text, View, TouchableOpacity } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 export interface RequiredEnglishModalProps extends ModalProps {
   onClose: () => void;
@@ -16,7 +16,7 @@ const RequiredEnglishModal: React.FC<RequiredEnglishModalProps> = (props) => {
             <View style={styles.header}>
               <Text style={styles.titleText}>Required English level</Text>
               <TouchableOpacity style={styles.closeButton} onPress={props.onClose}>
-                <FontAwesomeIcon icon={faTimes} color='white' />
+                <FontAwesomeIcon icon={faXmark} color='white' />
               </TouchableOpacity>
             </View>
             <Text style={styles.sectionText}>👉 They have achieved the required English language test score.</Text>

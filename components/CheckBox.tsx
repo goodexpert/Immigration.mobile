@@ -3,7 +3,7 @@ import { StyleSheet, ViewProps, Text, TouchableOpacity } from 'react-native';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 
 // https://facebook.github.io/react-native/docs/checkbox.html
 export interface CheckBoxProps extends ViewProps {
@@ -30,7 +30,7 @@ export interface CheckBoxProps extends ViewProps {
   /**
    * The label of the checkbox.
    */
-  label?: string | Element;
+  label?: React.ReactNode;
 
   /**
    * The value of the checkbox. If true the checkbox will be turned on. Default value is false.
@@ -51,14 +51,14 @@ const CheckBox: React.FC<CheckBoxProps> = (props) => {
   };
 
   const getValueIcon = () => {
-    return props.value ? faCheckCircle : faCircle;
+    return props.value ? faCircleCheck : faCircle;
   };
 
   React.useLayoutEffect(() => {
     if (props.value !== value) {
       setValue(props.value);
     }
-  });
+  }, [props.value, value]);
 
   return (
     <TouchableOpacity style={styles.checkBoxContainer} disabled={props.disabled} onPress={onClicked}>

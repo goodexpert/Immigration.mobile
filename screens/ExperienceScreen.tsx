@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, TouchableOpacity } from 'react-native';
 
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { MyColors as Colors } from '../constants/color';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft, faInfo } from '@fortawesome/free-solid-svg-icons';
-import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
+import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 
 import { asyncScheduler, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -23,7 +23,7 @@ import {
 } from '../components';
 import { AppState } from '../store';
 import { WorkExperience } from '../store/types';
-import { setWorkExperience } from '../store/Actions';
+import { setWorkExperience as setWorkExperienceAction } from '../store/Actions';
 import {
   isFinal,
   getWorkExperienceYears,
@@ -35,7 +35,7 @@ import {
 const workExperiences = ['2 - 4 years', '4 - 6 years', '6 - 8 years', '8 - 10 years', '10 years or more'];
 const workExperiencesInASS = ['2-5 years', '6 years or more'];
 
-const ExperienceScreen: React.FC<ExperienceProps> = ({ route, navigation, appState, setWorkExperience }) => {
+const ExperienceScreen: React.FC<ExperienceProps> = ({ navigation, appState, setWorkExperience }) => {
   const [isOpenInfo, setIsOpenInfo] = React.useState(false);
   const [isOpenAssInfo, setIsOpenAssInfo] = React.useState(false);
   const [workExperienceYears, setWorkExperienceYears] = React.useState(getWorkExperienceYears(appState));
@@ -185,7 +185,7 @@ const ExperienceScreen: React.FC<ExperienceProps> = ({ route, navigation, appSta
         <View style={styles.banner}>
           <BannerAd
             unitId={ADMOB_CONFIG.admob_banner_app_id}
-            size={BannerAdSize.SMART_BANNER}
+            size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
             requestOptions={{
               requestNonPersonalizedAdsOnly: true,
             }}
@@ -275,8 +275,8 @@ const mapStateToProps = (state: AppState) => ({
   appState: state.current,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  setWorkExperience: (payload: WorkExperience) => dispatch(setWorkExperience(payload)),
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+  setWorkExperience: (payload: WorkExperience) => dispatch(setWorkExperienceAction(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExperienceScreen);

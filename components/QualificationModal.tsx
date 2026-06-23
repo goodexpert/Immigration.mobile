@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Modal, ModalProps, Text, View, ListRenderItemInfo, Linking, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 interface QualificationLevelItem {
   name: string;
@@ -38,7 +38,7 @@ const QualificationModal: React.FC<QualificationModalProps> = (props) => {
             <View style={styles.header}>
               <Text style={styles.titleText}>Qualification</Text>
               <TouchableOpacity style={styles.closeButton} onPress={props.onClose}>
-                <FontAwesomeIcon icon={faTimes} color='white' />
+                <FontAwesomeIcon icon={faXmark} color='white' />
               </TouchableOpacity>
             </View>
             <FlatList

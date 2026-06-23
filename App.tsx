@@ -21,9 +21,10 @@ import {
   ResultScreen,
 } from './screens';
 
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { MyColors as Colors } from './constants/color';
+import { RootStackParamList } from './screens/types';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 
 const App: React.FC = () => {
   return (

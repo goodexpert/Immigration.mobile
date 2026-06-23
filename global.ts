@@ -1,5 +1,5 @@
 import { Platform } from 'react-native';
-import { TestIds } from '@react-native-firebase/admob';
+import { TestIds } from 'react-native-google-mobile-ads';
 
 /**
  * Global contants

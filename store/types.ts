@@ -8,7 +8,7 @@ export enum WorkTypes {
 }
 
 export interface Identity {
-  dateOfBirth: Date;
+  dateOfBirth: Date | null;
 }
 
 interface SetIdentityAction {

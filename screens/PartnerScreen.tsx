@@ -12,10 +12,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { MyColors as Colors } from '../constants/color';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import { AdEventType, BannerAd, BannerAdSize, InterstitialAd } from '@react-native-firebase/admob';
+import { AdEventType, BannerAd, BannerAdSize, InterstitialAd } from 'react-native-google-mobile-ads';
 
 import { asyncScheduler, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -33,7 +33,7 @@ import {
 } from '../components';
 import { AppState } from '../store';
 import { Partner } from '../store/types';
-import { setPartner, setFinal } from '../store/Actions';
+import { setPartner as setPartnerAction, setFinal as setFinalAction } from '../store/Actions';
 import {
   isFinal,
   getPartnerHasRequiredLevel,
@@ -41,17 +41,14 @@ import {
   getPartnerHasQualification,
   getPartnerHasQualificationLevel,
 } from './utils';
-import { initialState } from 'store/constants';
-
 const qualifications = ['Level 3-6', 'Level 7-8', 'Level 9-10'];
 
 const interstitial = InterstitialAd.createForAdRequest(ADMOB_CONFIG.admob_interstitial_app_id, {
   requestNonPersonalizedAdsOnly: true,
 });
 
-const PartnerScreen: React.FC<PartnerProps> = ({ route, navigation, appState, setPartner, setFinal }) => {
+const PartnerScreen: React.FC<PartnerProps> = ({ navigation, appState, setPartner, setFinal }) => {
   const [isLoading, setIsLoading] = React.useState(false);
-  const [isInitialized, setIsInialized] = React.useState(false);
   const [isOpenRequiredEnglishInfo, setIsOpenRequiredEnglishInfo] = React.useState(false);
   const [isOpenQualifactionInfo, setIsOpenQualifactionInfo] = React.useState(false);
   const [isOpenAssInfo, setIsOpenAssInfo] = React.useState(false);
@@ -86,26 +83,27 @@ const PartnerScreen: React.FC<PartnerProps> = ({ route, navigation, appState, se
     setQualificationLevel(index);
   };
 
-  const eventListener = interstitial.onAdEvent((type, error, data) => {
-    switch (type) {
-      case AdEventType.LOADED:
-        interstitial.show();
-        break;
-
-      case AdEventType.CLOSED:
-        navigation.push('Result');
-        setFinal(true);
-        setIsLoading(false);
-        break;
-
-      case AdEventType.ERROR:
-        console.info('Error', error);
-        navigation.push('Result');
-        setFinal(true);
-        setIsLoading(false);
-        break;
-    }
-  });
+  React.useEffect(() => {
+    const unsubLoaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+      interstitial.show();
+    });
+    const unsubClosed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
+      navigation.push('Result');
+      setFinal(true);
+      setIsLoading(false);
+    });
+    const unsubError = interstitial.addAdEventListener(AdEventType.ERROR, (error) => {
+      console.info('Error', error);
+      navigation.push('Result');
+      setFinal(true);
+      setIsLoading(false);
+    });
+    return () => {
+      unsubLoaded();
+      unsubClosed();
+      unsubError();
+    };
+  }, [navigation, setFinal]);
 
   React.useEffect(() => {
     navigation.setOptions({
@@ -221,7 +219,7 @@ const PartnerScreen: React.FC<PartnerProps> = ({ route, navigation, appState, se
         <View style={styles.banner}>
           <BannerAd
             unitId={ADMOB_CONFIG.admob_banner_app_id}
-            size={BannerAdSize.SMART_BANNER}
+            size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
             requestOptions={{
               requestNonPersonalizedAdsOnly: true,
             }}
@@ -322,9 +320,9 @@ const mapStateToProps = (state: AppState) => ({
   appState: state.current,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  setPartner: (payload: Partner) => dispatch(setPartner(payload)),
-  setFinal: (payload: Boolean) => dispatch(setFinal(payload)),
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+  setPartner: (payload: Partner) => dispatch(setPartnerAction(payload)),
+  setFinal: (payload: Boolean) => dispatch(setFinalAction(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PartnerScreen);

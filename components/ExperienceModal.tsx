@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Modal, ModalProps, Text, View, Linking, TouchableOpacity } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 export interface ExperienceMoalProps extends ModalProps {
   onClose: () => void;
@@ -22,7 +22,7 @@ const ExperienceModal: React.FC<ExperienceMoalProps> = (props) => {
             <View style={styles.header}>
               <Text style={styles.titleText}>Work experience</Text>
               <TouchableOpacity style={styles.closeButton} onPress={props.onClose}>
-                <FontAwesomeIcon icon={faTimes} color='white' />
+                <FontAwesomeIcon icon={faXmark} color='white' />
               </TouchableOpacity>
             </View>
             <Text style={styles.labelText}>

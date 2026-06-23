@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, TouchableOpacity } from 'react-native';
 
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { MyColors as Colors } from '../constants/color';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft, faInfo } from '@fortawesome/free-solid-svg-icons';
-import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
+import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 
 import { asyncScheduler, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -21,7 +21,7 @@ import {
   removeAndroidBackButtonHandler,
 } from '../components';
 import { AppState } from '../store';
-import { setQualification } from '../store/Actions';
+import { setQualification as setQualificationAction } from '../store/Actions';
 import { Qualification } from '../store/types';
 import {
   isFinal,
@@ -40,7 +40,7 @@ const nzQualificationLabels = [
   'Any recognised qualification started before 25 July 2011 - 2 years or more',
 ];
 
-const QualificationScreen: React.FC<QualificationProps> = ({ route, navigation, appState, setQualification }) => {
+const QualificationScreen: React.FC<QualificationProps> = ({ navigation, appState, setQualification }) => {
   const [isOpenInfo, setIsOpenInfo] = React.useState(false);
   const [qualificationLevel, setQualificationLevel] = React.useState(getQualificationLevel(appState));
   const [hasQualificationInNZ, setHasQualificationInNZ] = React.useState(getHasQualificationInNZ(appState));
@@ -168,7 +168,7 @@ const QualificationScreen: React.FC<QualificationProps> = ({ route, navigation, 
         <View style={styles.banner}>
           <BannerAd
             unitId={ADMOB_CONFIG.admob_banner_app_id}
-            size={BannerAdSize.SMART_BANNER}
+            size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
             requestOptions={{
               requestNonPersonalizedAdsOnly: true,
             }}
@@ -250,8 +250,8 @@ const mapStateToProps = (state: AppState) => ({
   appState: state.current,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  setQualification: (payload: Qualification) => dispatch(setQualification(payload)),
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+  setQualification: (payload: Qualification) => dispatch(setQualificationAction(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(QualificationScreen);

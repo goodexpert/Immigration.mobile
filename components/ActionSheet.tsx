@@ -12,7 +12,7 @@ export interface ActionSheetProp {
   onItemClicked: OnItemClicked | undefined;
 }
 
-const renderItem = ({ item, index, separators }: ListRenderItemInfo<string>, onItemClicked: OnItemClicked) => {
+const renderItem = ({ item, index }: ListRenderItemInfo<string>, onItemClicked: OnItemClicked) => {
   return (
     <TouchableOpacity onPress={() => onItemClicked(index)}>
       <View style={styles.listItem}>

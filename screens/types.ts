@@ -1,5 +1,13 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import {
+  ImmigrationState,
+  Identity as StoreIdentity,
+  Qualification as StoreQualification,
+  WorkExperience,
+  Employment as StoreEmployment,
+  Partner as StorePartner,
+} from '../store/types';
 
 export interface ResultItem {
   screen: ScreenName;
@@ -28,36 +36,49 @@ export enum ScreenName {
 }
 
 export type SplashProps = {
-  route: RouteProp<RootStackParamList, ScreenName.Splash>;
-  navigation: StackNavigationProp<RootStackParamList, ScreenName.Splash>;
+  route: RouteProp<RootStackParamList, 'Splash'>;
+  navigation: StackNavigationProp<RootStackParamList, 'Splash'>;
 };
 
 export type IdentityProps = {
-  route: RouteProp<RootStackParamList, ScreenName.Identity>;
-  navigation: StackNavigationProp<RootStackParamList, ScreenName.Identity>;
+  route: RouteProp<RootStackParamList, 'Identity'>;
+  navigation: StackNavigationProp<RootStackParamList, 'Identity'>;
+  appState: ImmigrationState;
+  setIdentify: (payload: StoreIdentity) => void;
 };
 
 export type QualificationProps = {
-  route: RouteProp<RootStackParamList, ScreenName.Qualification>;
-  navigation: StackNavigationProp<RootStackParamList, ScreenName.Qualification>;
+  route: RouteProp<RootStackParamList, 'Qualification'>;
+  navigation: StackNavigationProp<RootStackParamList, 'Qualification'>;
+  appState: ImmigrationState;
+  setQualification: (payload: StoreQualification) => void;
 };
 
 export type ExperienceProps = {
-  route: RouteProp<RootStackParamList, ScreenName.Experience>;
-  navigation: StackNavigationProp<RootStackParamList, ScreenName.Experience>;
+  route: RouteProp<RootStackParamList, 'Experience'>;
+  navigation: StackNavigationProp<RootStackParamList, 'Experience'>;
+  appState: ImmigrationState;
+  setWorkExperience: (payload: WorkExperience) => void;
 };
 
 export type EmploymentProps = {
-  route: RouteProp<RootStackParamList, ScreenName.Employment>;
-  navigation: StackNavigationProp<RootStackParamList, ScreenName.Employment>;
+  route: RouteProp<RootStackParamList, 'Employment'>;
+  navigation: StackNavigationProp<RootStackParamList, 'Employment'>;
+  appState: ImmigrationState;
+  setEmployment: (payload: StoreEmployment) => void;
 };
 
 export type PartnerProps = {
-  route: RouteProp<RootStackParamList, ScreenName.Partner>;
-  navigation: StackNavigationProp<RootStackParamList, ScreenName.Partner>;
+  route: RouteProp<RootStackParamList, 'Partner'>;
+  navigation: StackNavigationProp<RootStackParamList, 'Partner'>;
+  appState: ImmigrationState;
+  setPartner: (payload: StorePartner) => void;
+  setFinal: (payload: Boolean) => void;
 };
 
 export type ResultProps = {
-  route: RouteProp<RootStackParamList, ScreenName.Result>;
-  navigation: StackNavigationProp<RootStackParamList, ScreenName.Result>;
+  route: RouteProp<RootStackParamList, 'Result'>;
+  navigation: StackNavigationProp<RootStackParamList, 'Result'>;
+  appState: ImmigrationState;
+  reset: () => void;
 };
